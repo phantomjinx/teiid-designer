@@ -247,6 +247,8 @@ public class WSProfileDetailsWizardPage extends ConnectionProfileDetailsPage imp
                 
         }
         
+        setPingButtonEnabled(true);
+        
         setErrorMessage(null);
         setPageComplete(true);
         setMessage(UTIL.getString("Click.Next.or.Finish")); //$NON-NLS-1$
@@ -376,21 +378,7 @@ public class WSProfileDetailsWizardPage extends ConnectionProfileDetailsPage imp
         }
 
         public Exception testXmlUrlConnection( IConnectionProfile icp ) {
-        	Properties connProperties = icp.getBaseProperties();
-			//InputStream not provided, check XML file
-			String xmlFile = connProperties == null ? null :(String) connProperties.get( IXmlProfileConstants.URL_PROP_ID );
-			try {
-				InputStream is = new XMLSourceFromPath(xmlFile, null).openInputStream();
-				try
-				{
-					is.close( );
-				}catch ( IOException e ) {
-				}
-			} catch (OdaException odaEx) {
-				return odaEx;
-			}
-			
-			return null;
+        	return WSWizardUtils.testURLConnection(icp, IXmlProfileConstants.URL_PROP_ID);
         }
 
         public Throwable getTestConnectionException( IConnection conn ) {
