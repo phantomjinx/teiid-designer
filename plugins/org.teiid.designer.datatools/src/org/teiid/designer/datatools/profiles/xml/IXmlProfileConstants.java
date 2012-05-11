@@ -7,7 +7,9 @@
 */
 package org.teiid.designer.datatools.profiles.xml;
 
-public interface IXmlProfileConstants {
+import com.metamatrix.ui.ICredentialsCommon;
+
+public interface IXmlProfileConstants extends ICredentialsCommon {
 	String FILE_URL_CONNECTION_PROFILE_ID = "org.teiid.designer.datatools.profiles.xml.fileurl"; //$NON-NLS-1$
 	String LOCAL_FILE_CONNECTION_PROFILE_ID = "org.teiid.designer.datatools.profiles.xml.localfile"; //$NON-NLS-1$
 	
