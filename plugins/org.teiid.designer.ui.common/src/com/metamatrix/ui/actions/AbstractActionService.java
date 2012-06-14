@@ -10,9 +10,9 @@ package com.metamatrix.ui.actions;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,7 +27,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.WorkbenchPage;
+
 import com.metamatrix.core.util.CoreArgCheck;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.ui.AbstractUiPlugin;
 import com.metamatrix.ui.internal.InternalUiConstants;
 
@@ -75,7 +77,7 @@ public abstract class AbstractActionService implements ActionService, InternalUi
      * @see com.metamatrix.ui.actions.ActionService#addResourceChangeListener(org.eclipse.core.resources.IResourceChangeListener)
      */
     public void addResourceChangeListener( IResourceChangeListener theListener ) {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspace workspace = ModelerCore.getWorkspace();
 
         workspace.addResourceChangeListener(theListener);
     }
@@ -340,7 +342,7 @@ public abstract class AbstractActionService implements ActionService, InternalUi
      * @see com.metamatrix.ui.actions.ActionService#removeResourceChangeListener(org.eclipse.core.resources.IResourceChangeListener)
      */
     public void removeResourceChangeListener( IResourceChangeListener theListener ) {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspace workspace = ModelerCore.getWorkspace();
 
         workspace.removeResourceChangeListener(theListener);
     }

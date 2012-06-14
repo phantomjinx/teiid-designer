@@ -9,12 +9,12 @@ package com.metamatrix.metamodels.xsd.ui.wizards;
 
 import java.util.Collections;
 import java.util.Map;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
@@ -48,7 +48,9 @@ import org.eclipse.xsd.XSDFactory;
 import org.eclipse.xsd.XSDPackage;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDConstants;
+
 import com.metamatrix.metamodels.xsd.ui.XsdUiPlugin;
+import com.metamatrix.modeler.core.ModelerCore;
 
 /**
  * This is a simple wizard for creating a new model file.
@@ -245,7 +247,7 @@ public class XsdModelWizard extends Wizard implements
                 return null;
             }
 
-            return modelFile == null ? ResourcesPlugin.getWorkspace().getRoot()
+            return modelFile == null ? ModelerCore.getWorkspace().getRoot()
                                                       .getFile(getContainerFullPath().append(getFileName())) : modelFile;
         }
     }

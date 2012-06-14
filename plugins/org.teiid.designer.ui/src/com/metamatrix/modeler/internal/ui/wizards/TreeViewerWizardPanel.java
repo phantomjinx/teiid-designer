@@ -8,7 +8,6 @@
 package com.metamatrix.modeler.internal.ui.wizards;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
@@ -25,6 +24,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.metamodel.MetamodelDescriptor;
 import com.metamatrix.modeler.core.workspace.ModelResource;
 import com.metamatrix.modeler.internal.core.workspace.ModelUtil;
@@ -204,7 +205,7 @@ public class TreeViewerWizardPanel extends Composite implements UiConstants {
 
         ModelWorkspaceTreeProvider provider = new ModelWorkspaceTreeProvider();
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(), provider, provider);
-        dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        dialog.setInput(ModelerCore.getWorkspace().getRoot());
         dialog.setAllowMultiple(false);
         dialog.addFilter(new ClosedProjectFilter());
         dialog.addFilter(new DotProjectFilter());

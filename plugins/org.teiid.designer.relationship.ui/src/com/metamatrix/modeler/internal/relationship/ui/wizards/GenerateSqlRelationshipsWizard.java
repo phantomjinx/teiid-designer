@@ -204,6 +204,6 @@ public class GenerateSqlRelationshipsWizard extends AbstractWizard implements
 	// * @since 4.0
 	// */
 	// IPath getFolder() {
-	// return ResourcesPlugin.getWorkspace().getRoot().getRawLocation();
+	// return ModelerCore.getWorkspace().getRoot().getRawLocation();
 	// }
 }

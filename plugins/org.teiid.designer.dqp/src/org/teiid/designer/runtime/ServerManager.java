@@ -28,7 +28,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -43,6 +42,7 @@ import org.w3c.dom.NodeList;
 
 import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.StringUtilities;
+import com.metamatrix.modeler.core.ModelerCore;
 
 /**
  * The <code>ServerManager</code> class manages the creation, deletion, and editing of servers hosting Teiid servers.
@@ -208,7 +208,7 @@ public final class ServerManager implements EventManager {
         if (stateLocationPath != null) {
             try {
                 tempPreviewManager = new PreviewManager();
-                ResourcesPlugin.getWorkspace().addResourceChangeListener(tempPreviewManager);
+                ModelerCore.getWorkspace().addResourceChangeListener(tempPreviewManager);
                 addListener(tempPreviewManager);
             } catch (Exception e) {
                 Util.log(IStatus.ERROR, e, Util.getString("serverManagerErrorConstructingPreviewManager")); //$NON-NLS-1$
@@ -768,7 +768,7 @@ public final class ServerManager implements EventManager {
 
             // shutdown PreviewManage
             if (this.previewManager != null) {
-                ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.previewManager);
+                ModelerCore.getWorkspace().removeResourceChangeListener(this.previewManager);
 
                 try {
                     this.previewManager.shutdown(monitor);

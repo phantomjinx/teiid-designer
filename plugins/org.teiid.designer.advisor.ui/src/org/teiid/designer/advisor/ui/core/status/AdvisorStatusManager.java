@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -31,6 +30,7 @@ import com.metamatrix.core.event.EventObjectListener;
 import com.metamatrix.core.event.EventSourceException;
 import com.metamatrix.core.event.IChangeListener;
 import com.metamatrix.core.event.IChangeNotifier;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.ui.UiPlugin;
 import com.metamatrix.modeler.ui.event.ModelResourceEvent;
 import com.metamatrix.ui.internal.viewsupport.JobUtils;
@@ -84,7 +84,7 @@ public class AdvisorStatusManager implements IChangeListener, IStatusManager {
      * @since 4.3
      */
     public void dispose() {
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
+        ModelerCore.getWorkspace().removeResourceChangeListener(resourceListener);
         try {
             UiPlugin.getDefault().getEventBroker().removeListener(ModelResourceEvent.class, modelResourceListener);
         } catch (EventSourceException e) {
@@ -196,7 +196,7 @@ public class AdvisorStatusManager implements IChangeListener, IStatusManager {
         // deltas relating to vdb resources have changed
         // -----------------------------------------------------------
         resourceListener = new MarkerDeltaListener();
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener);
+        ModelerCore.getWorkspace().addResourceChangeListener(resourceListener);
     }
 
     public void removeListener( StatusListener listener ) {
@@ -295,9 +295,9 @@ public class AdvisorStatusManager implements IChangeListener, IStatusManager {
 
         if (JobUtils.validationJobsExist()) {
             if (!isListeningForBuildComplete) {
-                if (ResourcesPlugin.getWorkspace().isAutoBuilding()) {
+                if (ModelerCore.getWorkspace().isAutoBuilding()) {
                     // System.out.println(" WSVM.updateStatus():  ##### validation running #####.  AUTOBUILD = " +
-                    // ResourcesPlugin.getWorkspace().isAutoBuilding());
+                    // ModelerCore.getWorkspace().isAutoBuilding());
 
                     Job.getJobManager().addJobChangeListener(this.autoBuildJobListener);
 
@@ -344,7 +344,7 @@ public class AdvisorStatusManager implements IChangeListener, IStatusManager {
 
             if (!JobUtils.validationJobsExist() && theEvent.getJob().getName().equals(AUTOBUILD_JOB_NAME)) {
                 // System.out.println(" AutoBuildJobListener.done():  ##### validation Finished. #####         AUTOBUILD = " +
-                // ResourcesPlugin.getWorkspace().isAutoBuilding());
+                // ModelerCore.getWorkspace().isAutoBuilding());
                 updateStatus(false);
                 isListeningForBuildComplete = false;
             }

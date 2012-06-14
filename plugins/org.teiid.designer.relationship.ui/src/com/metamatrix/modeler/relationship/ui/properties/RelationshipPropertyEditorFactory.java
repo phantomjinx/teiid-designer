@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.core.resources.ResourcesPlugin;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.ui.celleditor.ExtendedDialogCellEditor;
 import org.eclipse.emf.common.util.BasicEList;
@@ -25,10 +25,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+
 import com.metamatrix.metamodels.relationship.Relationship;
 import com.metamatrix.metamodels.relationship.RelationshipPackage;
 import com.metamatrix.metamodels.relationship.RelationshipRole;
 import com.metamatrix.metamodels.relationship.RelationshipType;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelObjectPathLabelProvider;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelWorkspaceDialog;
 import com.metamatrix.modeler.internal.ui.viewsupport.WorkspaceTreeAccumulatorSource;
@@ -346,7 +348,7 @@ public class RelationshipPropertyEditorFactory implements IPropertyEditorFactory
         result.setMessage(message);
         result.setAllowMultiple(false);
     
-        result.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        result.setInput(ModelerCore.getWorkspace().getRoot());
         result.addFilter(new RelationshipTypeViewerFilter());
 
         result.setValidator(new ISelectionStatusValidator() {
@@ -406,7 +408,7 @@ public class RelationshipPropertyEditorFactory implements IPropertyEditorFactory
         result.setMessage(message);
         result.setAllowMultiple(false);
     
-        result.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        result.setInput(ModelerCore.getWorkspace().getRoot());
 
         result.setValidator(new ISelectionStatusValidator() {
             public IStatus validate(Object[] selection) {

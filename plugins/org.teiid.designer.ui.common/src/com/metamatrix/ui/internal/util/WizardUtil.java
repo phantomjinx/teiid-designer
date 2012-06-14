@@ -9,7 +9,6 @@ package com.metamatrix.ui.internal.util;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -22,10 +21,12 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import com.metamatrix.core.util.CoreArgCheck;
 import org.teiid.core.util.FileUtils;
-import com.metamatrix.core.util.I18nUtil;
+
+import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.CoreStringUtil;
+import com.metamatrix.core.util.I18nUtil;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.ui.UiConstants;
 import com.metamatrix.ui.internal.InternalUiConstants;
 import com.metamatrix.ui.internal.wizard.IPersistentWizardPage;
@@ -214,14 +215,14 @@ public final class WizardUtil implements InternalUiConstants.Widgets,
                 page.setPageComplete(false);
                 return null;
             }
-            if (!ResourcesPlugin.getWorkspace().validateName(fileName, IResource.FILE).isOK()) {
+            if (!ModelerCore.getWorkspace().validateName(fileName, IResource.FILE).isOK()) {
                 setPageComplete(page, INVALID_FILE_MESSAGE, IMessageProvider.ERROR);
             } else {
                 final String folderName = folderText.getText();
                 if (CoreStringUtil.isEmpty(folderName)) {
                     setPageComplete(page, MISSING_FOLDER_MESSAGE, IMessageProvider.ERROR);
                 } else {
-                    final IResource resrc = ResourcesPlugin.getWorkspace().getRoot().findMember(folderName);
+                    final IResource resrc = ModelerCore.getWorkspace().getRoot().findMember(folderName);
                     if (resrc == null  ||  !(resrc instanceof IContainer)  ||  resrc.getProject() == null) {
                         setPageComplete(page, INVALID_FOLDER_MESSAGE, IMessageProvider.ERROR);
                     } else if (!resrc.getProject().isOpen()) {

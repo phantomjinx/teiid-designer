@@ -9,8 +9,8 @@ package com.metamatrix.modeler.internal.ui.viewsupport;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerContentProvider;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
 import com.metamatrix.modeler.internal.ui.search.IFinderHostDialog;
@@ -124,7 +126,7 @@ public class ModelWorkspacePanel extends Composite implements IFinderPanel, ISel
             setInput(root);
         } else {
             // use default root
-            setInput(ResourcesPlugin.getWorkspace().getRoot());
+            setInput(ModelerCore.getWorkspace().getRoot());
         }
 
         createControl(this);

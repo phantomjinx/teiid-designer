@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
@@ -31,6 +30,7 @@ import org.teiid.designer.advisor.ui.core.status.AdvisorStatus;
 import org.teiid.designer.advisor.ui.util.DSPPluginImageHelper;
 
 import com.metamatrix.metamodels.core.ModelType;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelerUiViewUtils;
 import com.metamatrix.ui.internal.util.UiUtil;
 
@@ -399,7 +399,7 @@ public class StatusActionHandler implements IAdvisorActionHandler, AdvisorUiCons
                     actions.add(showProblemsViewIPAction);
 //                }
                 String desc = Messages.Options_Action_TurnAutobiuldOn_description;
-                if (ResourcesPlugin.getWorkspace().isAutoBuilding()) {
+                if (ModelerCore.getWorkspace().isAutoBuilding()) {
                     desc = Messages.Options_Action_TurnAutobiuldOff_description;
                 }
                 toggleAutoBuildIPAction.setDescription(desc);

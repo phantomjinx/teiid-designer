@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -25,6 +24,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.MoveProjectAction;
 import org.eclipse.ui.actions.MoveResourceAction;
 
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.refactor.actions.MoveRefactorAction;
 import com.metamatrix.modeler.ui.actions.DelegatableAction;
 import com.metamatrix.ui.internal.eventsupport.SelectionUtilities;
@@ -75,7 +75,7 @@ public class ModelNavigatorMoveAction extends MoveResourceAction {
         List destinations = getDestinations();
 
         if ((destinations != null) && !destinations.isEmpty()) {
-            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            IWorkspaceRoot root = ModelerCore.getWorkspace().getRoot();
             List resources = new ArrayList();
 
             for (Object obj : destinations) {

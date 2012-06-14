@@ -11,7 +11,6 @@ import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -37,6 +36,7 @@ import org.teiid.designer.runtime.ui.actions.GenerateRestWarAction;
 
 import com.metamatrix.core.event.IChangeListener;
 import com.metamatrix.core.event.IChangeNotifier;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.core.workspace.ModelUtil;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerContentProvider;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
@@ -265,7 +265,7 @@ public class GenerateRestWarDialog extends TitleAreaDialog implements IChangeLis
 		result.setMessage(message);
 		result.setAllowMultiple(false);
 
-		result.setInput(ResourcesPlugin.getWorkspace().getRoot());
+		result.setInput(ModelerCore.getWorkspace().getRoot());
 
 		result.setValidator(new ISelectionStatusValidator() {
 			@Override

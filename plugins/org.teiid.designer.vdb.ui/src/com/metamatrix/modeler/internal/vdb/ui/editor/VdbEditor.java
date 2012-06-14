@@ -1304,7 +1304,7 @@ public final class VdbEditor extends EditorPart implements IResourceChangeListen
         createEditorBottom(sash);
         sash.setWeights(new int[] {50, 50});
 
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        ModelerCore.getWorkspace().addResourceChangeListener(this);
     }
 
     private void createEditorTop( Composite parent ) {
@@ -1975,7 +1975,7 @@ public final class VdbEditor extends EditorPart implements IResourceChangeListen
         }
 
         // Un-Register this for Resource change events
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        ModelerCore.getWorkspace().removeResourceChangeListener(this);
 
         super.dispose();
     }

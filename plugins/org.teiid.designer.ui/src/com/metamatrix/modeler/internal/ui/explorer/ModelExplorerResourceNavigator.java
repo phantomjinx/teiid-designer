@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -86,6 +85,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import com.metamatrix.core.event.EventObjectListener;
 import com.metamatrix.core.event.EventSourceException;
 import com.metamatrix.core.util.I18nUtil;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.core.workspace.DotProjectUtils;
 import com.metamatrix.modeler.internal.ui.PluginConstants;
 import com.metamatrix.modeler.internal.ui.actions.DeleteResourceAction;
@@ -366,7 +366,7 @@ public class ModelExplorerResourceNavigator extends ResourceNavigator
                 }
             }
         };
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(markerListener);
+        ModelerCore.getWorkspace().addResourceChangeListener(markerListener);
 
         addCustomListeners();
     }
@@ -491,7 +491,7 @@ public class ModelExplorerResourceNavigator extends ResourceNavigator
             ModelUtilities.removeNotifyChangedListener(notificationHandler);
         }
         if (markerListener != null) {
-            ResourcesPlugin.getWorkspace().removeResourceChangeListener(markerListener);
+            ModelerCore.getWorkspace().removeResourceChangeListener(markerListener);
         }
         if (modelResourceListener != null) {
             try {

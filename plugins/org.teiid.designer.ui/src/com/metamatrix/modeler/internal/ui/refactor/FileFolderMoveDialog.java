@@ -10,11 +10,12 @@ package com.metamatrix.modeler.internal.ui.refactor;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.refactor.ResourceMoveCommand;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerContentProvider;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
@@ -129,7 +130,7 @@ public class FileFolderMoveDialog extends ElementTreeSelectionDialog {
             setInput( root );
         } else {
             // use default root
-            setInput( ResourcesPlugin.getWorkspace().getRoot() );
+            setInput( ModelerCore.getWorkspace().getRoot() );
         }
 
         setAllowMultiple( false );
@@ -148,7 +149,7 @@ public class FileFolderMoveDialog extends ElementTreeSelectionDialog {
 
         IProject firstProject = null;
         IProject projectToSelect = null;
-        Object[] oChildren = cpContentProvider.getChildren( ResourcesPlugin.getWorkspace().getRoot() );
+        Object[] oChildren = cpContentProvider.getChildren( ModelerCore.getWorkspace().getRoot() );
 
         for ( int i = 0; i < oChildren.length; i++ ) {
             if( oChildren[ i ] instanceof IProject ) {

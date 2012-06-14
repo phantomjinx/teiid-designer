@@ -234,7 +234,7 @@ public class RelationshipObjectProcessor extends AbstractObjectProcessor {
             String projSeg = path.segment(0);
 
             // Check if Project exists - if it doesnt, create it.
-            IProject existProj = ResourcesPlugin.getWorkspace().getRoot().getProject(projSeg);
+            IProject existProj = ModelerCore.getWorkspace().getRoot().getProject(projSeg);
             if (!existProj.exists()) {
                 existProj = createProject(existProj, new NullProgressMonitor());
             }
@@ -305,7 +305,7 @@ public class RelationshipObjectProcessor extends AbstractObjectProcessor {
         } else {
             String projSeg = locPath.segment(0);
             // Check if Project exists
-            IProject existProj = ResourcesPlugin.getWorkspace().getRoot().getProject(projSeg);
+            IProject existProj = ModelerCore.getWorkspace().getRoot().getProject(projSeg);
 
             if (!existProj.exists()) existProj = createProject(existProj, new NullProgressMonitor());
 

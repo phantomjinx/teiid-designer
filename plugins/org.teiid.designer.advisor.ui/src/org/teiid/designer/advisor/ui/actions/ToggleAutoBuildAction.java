@@ -9,12 +9,13 @@ package org.teiid.designer.advisor.ui.actions;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+
+import com.metamatrix.modeler.core.ModelerCore;
 
 public class ToggleAutoBuildAction extends Action implements
 		ActionFactory.IWorkbenchAction {
@@ -29,7 +30,7 @@ public class ToggleAutoBuildAction extends Action implements
 	public ToggleAutoBuildAction(IWorkbenchWindow window) {
 		super("Build Automatically");
 		this.window = window;
-		setChecked(ResourcesPlugin.getWorkspace().isAutoBuilding());
+		setChecked(ModelerCore.getWorkspace().isAutoBuilding());
 	}
 
 	/*
@@ -46,8 +47,9 @@ public class ToggleAutoBuildAction extends Action implements
 	 * 
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
-	public void run() {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	@Override
+  public void run() {
+		IWorkspace workspace = ModelerCore.getWorkspace();
 		IWorkspaceDescription description = workspace.getDescription();
 		description.setAutoBuilding(!description.isAutoBuilding());
 		try {

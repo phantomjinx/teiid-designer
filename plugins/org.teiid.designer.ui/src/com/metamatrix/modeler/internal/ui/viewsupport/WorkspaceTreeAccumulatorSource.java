@@ -10,7 +10,7 @@ package com.metamatrix.modeler.internal.ui.viewsupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.core.resources.ResourcesPlugin;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -21,6 +21,8 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerContentProvider;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
 import com.metamatrix.modeler.ui.UiConstants;
@@ -149,7 +151,7 @@ public class WorkspaceTreeAccumulatorSource implements IAccumulatorSource {
         if ( viewerFilter != null ) {
             treeViewer.addFilter(viewerFilter);
         }
-        treeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        treeViewer.setInput(ModelerCore.getWorkspace().getRoot());
         treeViewer.expandToLevel(2);
         return treeViewer.getControl();
     }

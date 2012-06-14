@@ -8,7 +8,6 @@
 package org.teiid.designer.runtime.ui.actions;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
@@ -18,6 +17,7 @@ import org.eclipse.ui.ide.IDE;
 import org.teiid.designer.runtime.ui.vdb.VdbConstants;
 
 import com.metamatrix.core.util.I18nUtil;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.dqp.ui.DqpUiConstants;
 import com.metamatrix.modeler.dqp.ui.DqpUiPlugin;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerContentProvider;
@@ -77,7 +77,7 @@ public class EditVdbAction  extends Action implements VdbConstants {
 		result.setMessage(message);
 		result.setAllowMultiple(false);
 
-		result.setInput(ResourcesPlugin.getWorkspace().getRoot());
+		result.setInput(ModelerCore.getWorkspace().getRoot());
 
 		result.setValidator(new ISelectionStatusValidator() {
 			public IStatus validate(Object[] selection) {

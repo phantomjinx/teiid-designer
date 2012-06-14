@@ -139,7 +139,7 @@ public class ModelWorkspaceImpl extends OpenableImpl implements ModelWorkspace {
      * Returns the workbench associated with this object.
      */
     public IWorkspace getWorkspace() {
-        return ResourcesPlugin.getWorkspace();
+        return ModelerCore.getWorkspace();
     }
 
     /**
@@ -153,7 +153,7 @@ public class ModelWorkspaceImpl extends OpenableImpl implements ModelWorkspace {
 
         ModelWorkspaceManager.getModelWorkspaceManager().putInfo(this, info);
         // determine my children
-        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        IProject[] projects = ModelerCore.getWorkspace().getRoot().getProjects();
         for (int i = 0, max = projects.length; i < max; i++) {
             IProject project = projects[i];
             if (ModelerCore.hasModelNature(project)) {
@@ -375,7 +375,7 @@ public class ModelWorkspaceImpl extends OpenableImpl implements ModelWorkspace {
             throw new ModelWorkspaceException(ModelerCore.Util.getString("ModelWorkspaceImpl.cannotCreateModelProject", name)); //$NON-NLS-1$
         }
         // Validate name
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IWorkspace workspace = ModelerCore.getWorkspace();
         final IStatus status = workspace.validateName(name, IResource.PROJECT);
         if (!status.isOK()) {
             throw new ModelWorkspaceException(new ModelStatusImpl(status.getSeverity(), status.getCode(), status.getMessage()));

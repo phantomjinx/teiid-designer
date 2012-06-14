@@ -34,7 +34,6 @@ import javax.tools.ToolProvider;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -53,6 +52,7 @@ import org.teiid.designer.dqp.webservice.war.ui.wizards.WarDeploymentInfoPanel;
 
 import com.metamatrix.core.modeler.util.FileUtils;
 import com.metamatrix.core.util.TempDirectory;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.types.DatatypeConstants;
 import com.metamatrix.modeler.internal.core.workspace.ModelUtil;
 import com.metamatrix.modeler.internal.webservice.gen.BasicWsdlGenerator;
@@ -671,7 +671,7 @@ public class DefaultWebArchiveBuilderImpl implements WebArchiveBuilder {
 
         String vdbFileName = properties.getProperty(WebArchiveBuilderConstants.PROPERTY_VDB_FILE_NAME);
         IPath vdbPath = new Path(vdbFileName);
-        IFile vdbFile = ResourcesPlugin.getWorkspace().getRoot().getFile(vdbPath);
+        IFile vdbFile = ModelerCore.getWorkspace().getRoot().getFile(vdbPath);
         
     	VdbResourceFinder vdbResourceFinder = new VdbResourceFinder(vdbFile);
         

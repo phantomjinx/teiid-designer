@@ -10,9 +10,9 @@ package com.metamatrix.modeler.internal.webservice.ui.wizard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -31,7 +31,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.teiid.core.util.FileUtils;
+
 import com.metamatrix.core.util.I18nUtil;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.core.workspace.ModelUtil;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelUtilities;
@@ -335,7 +337,7 @@ public class XmlModelSelectionPage extends AbstractWizardPage
 
                 for (int i = 0; i < temp.length; i++) {
                     // only add if folder exists in workspace
-                    if (ResourcesPlugin.getWorkspace().getRoot().findMember(temp[i]) != null) {
+                    if (ModelerCore.getWorkspace().getRoot().findMember(temp[i]) != null) {
                         folders.add(temp[i]);
                     }
                 }
@@ -481,7 +483,7 @@ public class XmlModelSelectionPage extends AbstractWizardPage
                 // see if model exists or would be a new model
                 String temp = null;
                 IPath containerPath = new Path(this.modelLocation);
-                IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(containerPath);
+                IResource resource = ModelerCore.getWorkspace().getRoot().findMember(containerPath);
 
                 if (resource != null) {
                     IPath path = resource.getLocation();

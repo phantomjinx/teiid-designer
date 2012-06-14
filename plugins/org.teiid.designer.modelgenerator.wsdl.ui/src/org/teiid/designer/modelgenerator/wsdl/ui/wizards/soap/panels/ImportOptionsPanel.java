@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.osgi.util.NLS;
@@ -34,6 +33,7 @@ import org.teiid.designer.modelgenerator.wsdl.ui.Messages;
 
 import com.metamatrix.core.event.IChangeListener;
 import com.metamatrix.core.event.IChangeNotifier;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.workspace.ModelResource;
 import com.metamatrix.modeler.core.workspace.ModelWorkspaceException;
 import com.metamatrix.modeler.internal.ui.viewsupport.MetamodelSelectionUtilities;
@@ -245,7 +245,7 @@ public class ImportOptionsPanel implements IChangeListener, ModelGeneratorWsdlUi
 	 * the container field.
 	 */
 	void handleSourceModelLocationBrowse() {
-		final IContainer folder = WidgetUtil.showFolderSelectionDialog(ResourcesPlugin.getWorkspace().getRoot(),
+		final IContainer folder = WidgetUtil.showFolderSelectionDialog(ModelerCore.getWorkspace().getRoot(),
 			new ModelingResourceFilter(), new ModelProjectSelectionStatusValidator());
 
 		if (folder != null && sourceModelContainerText != null) {
@@ -258,7 +258,7 @@ public class ImportOptionsPanel implements IChangeListener, ModelGeneratorWsdlUi
 	}
 	
 	void handleViewModelLocationBrowse() {
-		final IContainer folder = WidgetUtil.showFolderSelectionDialog(ResourcesPlugin.getWorkspace().getRoot(),
+		final IContainer folder = WidgetUtil.showFolderSelectionDialog(ModelerCore.getWorkspace().getRoot(),
 			new ModelingResourceFilter(), new ModelProjectSelectionStatusValidator());
 
 		if (folder != null && sourceModelContainerText != null) {

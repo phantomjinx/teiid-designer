@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -36,6 +37,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.edit.provider.ChangeNotifier;
 import org.eclipse.emf.edit.provider.INotifyChangedListener;
 import org.teiid.designer.core.xmi.XMIHeader;
+
 import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.IOperation;
 import com.metamatrix.modeler.core.ModelerCore;
@@ -93,7 +95,7 @@ public class ModelWorkspaceManager implements XmiHeaderCache {
             ModelResource resource = (ModelResource)project.findModelWorkspaceItem(file);
             if (resource != null) return resource;
             // Else it was not found, so it must be created ...
-            resource = (ModelResource)ModelWorkspaceManager.getModelWorkspaceManager().findModelWorkspaceItem(file, true);
+            resource = (ModelResource) getModelWorkspaceManager().findModelWorkspaceItem(file, true);
             return resource;
         } catch (final ModelWorkspaceException e) {
             return null;
@@ -114,7 +116,7 @@ public class ModelWorkspaceManager implements XmiHeaderCache {
             ModelWorkspaceItem folderItem = project.findModelWorkspaceItem(folder);
             if (folderItem != null) return folderItem;
             // Else it was not found, so it must be created ...
-            folderItem = ModelWorkspaceManager.getModelWorkspaceManager().findModelWorkspaceItem(folder, true);
+            folderItem = getModelWorkspaceManager().findModelWorkspaceItem(folder, true);
             return folderItem;
         } catch (final ModelWorkspaceException e) {
             return null;
@@ -169,7 +171,7 @@ public class ModelWorkspaceManager implements XmiHeaderCache {
             final IWorkspace workspace;
             try {
                 // Start up the ModelWorkspaceManager ...
-                workspace = ResourcesPlugin.getWorkspace();
+                workspace = ModelerCore.getWorkspace();
                 workspace.addResourceChangeListener(manager.getDeltaProcessor(), IResourceChangeEvent.PRE_BUILD
                                                                                  | IResourceChangeEvent.POST_BUILD
                                                                                  | IResourceChangeEvent.POST_CHANGE
@@ -191,7 +193,7 @@ public class ModelWorkspaceManager implements XmiHeaderCache {
     public final static void shutdown() throws CoreException {
         if (manager != null) try {
             // Remove the delta processor as a listener of resource change events
-            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            final IWorkspace workspace = ModelerCore.getWorkspace();
             workspace.removeResourceChangeListener(manager.getDeltaProcessor());
 
             // Shutdown the manager

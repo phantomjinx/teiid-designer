@@ -9,7 +9,6 @@ package com.metamatrix.modeler.internal.ui.viewsupport;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -26,6 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerContentProvider;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
 import com.metamatrix.modeler.ui.UiConstants;
@@ -102,7 +103,7 @@ public class ModelWorkspaceDialog extends ElementTreeSelectionDialog implements 
             setInput(root);
         } else {
             // use default root
-            setInput(ResourcesPlugin.getWorkspace().getRoot());
+            setInput(ModelerCore.getWorkspace().getRoot());
         }
 
     }

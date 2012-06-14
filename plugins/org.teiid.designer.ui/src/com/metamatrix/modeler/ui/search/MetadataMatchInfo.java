@@ -8,9 +8,10 @@
 package com.metamatrix.modeler.ui.search;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.search.ui.text.Match;
+
+import com.metamatrix.modeler.core.ModelerCore;
 
 /**
  * @since 6.0.0
@@ -91,7 +92,7 @@ public class MetadataMatchInfo {
      * @since 6.0.0
      */
     public IResource getResource() {
-        return ResourcesPlugin.getWorkspace().getRoot().getFile(Path.fromOSString(getResourcePath()));
+        return ModelerCore.getWorkspace().getRoot().getFile(Path.fromOSString(getResourcePath()));
     }
 
     /**

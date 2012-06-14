@@ -17,9 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.WrappedException;
@@ -68,10 +68,12 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+
 import com.metamatrix.core.util.CoreArgCheck;
-import com.metamatrix.core.util.I18nUtil;
 import com.metamatrix.core.util.CoreStringUtil;
+import com.metamatrix.core.util.I18nUtil;
 import com.metamatrix.core.util.StringUtilities;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.ui.UiConstants;
 import com.metamatrix.ui.internal.InternalUiConstants;
 import com.metamatrix.ui.internal.widget.ITreeViewerController;
@@ -1201,7 +1203,7 @@ public final class WidgetUtil implements
         if (validator != null) {
             dlg.setValidator(validator);
         }
-        dlg.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        dlg.setInput(ModelerCore.getWorkspace().getRoot());
         if (selection != null) {
             dlg.setInitialSelection(selection);
         }
@@ -1248,7 +1250,7 @@ public final class WidgetUtil implements
         if (validator != null) {
             dlg.setValidator(validator);
         }
-        dlg.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        dlg.setInput(ModelerCore.getWorkspace().getRoot());
         if (selection != null) {
             dlg.setInitialSelection(selection);
         }

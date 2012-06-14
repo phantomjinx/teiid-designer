@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import org.eclipse.core.resources.ResourcesPlugin;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -41,10 +41,12 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.eclipse.xsd.XSDImport;
 import org.eclipse.xsd.XSDSchema;
+import org.teiid.core.TeiidException;
+
 import com.metamatrix.common.protocol.URLHelper;
 import com.metamatrix.common.xsd.XsdHeader;
 import com.metamatrix.common.xsd.XsdHeaderReader;
-import org.teiid.core.TeiidException;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.workspace.ModelResource;
 import com.metamatrix.modeler.internal.core.workspace.ModelUtil;
 import com.metamatrix.modeler.internal.core.workspace.ModelWorkspaceManager;
@@ -433,7 +435,7 @@ public class XsdFileSystemImportUtil {
         operation.setContext(container.getShell());
 
         // Let's cache the auto-build and reset after.
-        boolean autoBuildOn = ResourcesPlugin.getWorkspace().isAutoBuilding();
+        boolean autoBuildOn = ModelerCore.getWorkspace().isAutoBuilding();
         if (autoBuildOn) {
             JobUtils.setAutoBuild(false);
         }

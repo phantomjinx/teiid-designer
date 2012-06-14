@@ -10,9 +10,9 @@ package org.teiid.designer.runtime.preview.jobs;
 
 import static com.metamatrix.modeler.dqp.DqpPlugin.PLUGIN_ID;
 import static com.metamatrix.modeler.dqp.DqpPlugin.Util;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceRuleFactory;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,6 +22,8 @@ import org.teiid.designer.runtime.DebugConstants;
 import org.teiid.designer.runtime.PreferenceConstants;
 import org.teiid.designer.runtime.preview.Messages;
 import org.teiid.designer.runtime.preview.PreviewContext;
+
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.dqp.DqpPlugin;
 
 /**
@@ -95,7 +97,7 @@ public abstract class WorkspacePreviewVdbJob extends WorkspaceJob implements Pre
      * @return the resource job scheduling rule factory
      */
     protected IResourceRuleFactory getSchedulingRuleFactory() {
-        return ResourcesPlugin.getWorkspace().getRuleFactory();
+        return ModelerCore.getWorkspace().getRuleFactory();
     }
 
     /**

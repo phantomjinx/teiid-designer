@@ -15,11 +15,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.resources.ResourcesPlugin;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EObject;
+
 import com.metamatrix.core.event.EventSourceException;
 import com.metamatrix.core.util.CoreArgCheck;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.IModelerCacheListener;
 import com.metamatrix.modeler.internal.ui.ModelerCacheEvent;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelUtilities;
@@ -57,7 +59,7 @@ public final class EObjectModelerCache extends AbstractSet
         
         // hook up listener
         ModelUtilities.addNotifyChangedListener(this.eventMgr);
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this.eventMgr);
+        ModelerCore.getWorkspace().addResourceChangeListener(this.eventMgr);
         
         try {
             UiPlugin.getDefault().getEventBroker().addListener(ModelResourceEvent.class, this.eventMgr);

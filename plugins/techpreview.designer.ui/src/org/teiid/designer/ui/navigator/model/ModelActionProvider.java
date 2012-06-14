@@ -28,7 +28,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.edit.provider.INotifyChangedListener;
@@ -70,6 +69,7 @@ import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
 import com.metamatrix.core.event.EventObjectListener;
 import com.metamatrix.core.event.EventSourceException;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.core.workspace.DotProjectUtils;
 import com.metamatrix.modeler.internal.ui.PluginConstants;
 import com.metamatrix.modeler.internal.ui.actions.CloneProjectAction2;
@@ -146,7 +146,7 @@ public class ModelActionProvider extends CommonActionProvider {
         }
 
         if (this.markerListener != null) {
-            ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.markerListener);
+            ModelerCore.getWorkspace().removeResourceChangeListener(this.markerListener);
         }
 
         if (this.modelResourceListener != null) {
@@ -856,7 +856,7 @@ public class ModelActionProvider extends CommonActionProvider {
             }
         };
 
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this.markerListener);
+        ModelerCore.getWorkspace().addResourceChangeListener(this.markerListener);
 
         this.modelResourceListener = new EventObjectListener() {
             /**

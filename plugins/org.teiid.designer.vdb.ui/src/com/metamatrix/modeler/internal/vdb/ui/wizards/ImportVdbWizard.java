@@ -7,7 +7,6 @@
  */
 package com.metamatrix.modeler.internal.vdb.ui.wizards;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -17,8 +16,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
-import com.metamatrix.core.util.I18nUtil;
+
 import com.metamatrix.core.util.CoreStringUtil;
+import com.metamatrix.core.util.I18nUtil;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.PluginConstants;
 import com.metamatrix.modeler.vdb.ui.VdbUiConstants;
 import com.metamatrix.modeler.vdb.ui.VdbUiPlugin;
@@ -97,7 +98,7 @@ public class ImportVdbWizard extends AbstractWizard
     }
 
     IPath getFolder() {
-        return ResourcesPlugin.getWorkspace().getRoot().getRawLocation();
+        return ModelerCore.getWorkspace().getRoot().getRawLocation();
     }
 
     /**

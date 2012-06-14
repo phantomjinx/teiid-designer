@@ -8,7 +8,6 @@
 package org.teiid.designer.advisor.ui.views.status;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
@@ -29,7 +28,9 @@ import org.teiid.designer.advisor.ui.Messages;
 import org.teiid.designer.advisor.ui.core.AdvisorHyperLinkListener;
 import org.teiid.designer.advisor.ui.util.DSPPluginImageHelper;
 import org.teiid.designer.advisor.ui.util.HyperLinkLabelRow;
+
 import com.metamatrix.core.util.CoreArgCheck;
+import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.ui.forms.FormUtil;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelProjectSelectionStatusValidator;
 import com.metamatrix.modeler.ui.viewsupport.ModelingResourceFilter;
@@ -236,7 +237,7 @@ public class ProjectStatusSection implements AdvisorUiConstants.Groups {
 
         ModelProjectStatus status = (ModelProjectStatus)theStatus;
 
-        boolean autovalidateOn = ResourcesPlugin.getWorkspace().isAutoBuilding();
+        boolean autovalidateOn = ModelerCore.getWorkspace().isAutoBuilding();
 
         // =========================================================================================================================
 
