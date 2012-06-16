@@ -19,12 +19,14 @@ import org.teiid.designer.extension.definition.ModelExtensionDefinitionHeader;
 import org.teiid.designer.extension.properties.ModelExtensionPropertyDefinition.Type;
 import org.teiid.designer.extension.properties.Translation;
 
+import com.metamatrix.core.util.SmartTestDesignerSuite;
+
 /**
  * 
  */
 public interface Constants {
 
-    String TESTDATA = "testdata"; //$NON-NLS-1$
+    String TESTDATA = SmartTestDesignerSuite.getTestDataPath(Constants.class);
 
     String FUNCTION_METAMODEL = "http://www.metamatrix.com/metamodels/MetaMatrixFunction"; //$NON-NLS-1$
     String RELATIONAL_METAMODEL = "http://www.metamatrix.com/metamodels/Relational"; //$NON-NLS-1$

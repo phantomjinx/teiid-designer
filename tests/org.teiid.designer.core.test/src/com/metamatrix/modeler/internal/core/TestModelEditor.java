@@ -8,20 +8,20 @@
 package com.metamatrix.modeler.internal.core;
 
 import java.io.File;
+
 import junit.framework.TestCase;
-import com.metamatrix.core.util.ProjectUtil;
+
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 
 public final class TestModelEditor extends TestCase {
 
     public void testCloneProject() throws Exception {
-        StringBuffer builder = new StringBuffer(ProjectUtil.getProjectPath(getClass()));
-        builder.append("testdata"); //$NON-NLS-1$
-        builder.append(File.separatorChar);
-        builder.append("cloneProject"); //$NON-NLS-1$
-        builder.append(File.separatorChar);
+        String testDataPath = SmartTestDesignerSuite.getTestDataPath(getClass()) + File.separator + "cloneProject"; //$NON-NLS-1$
+        
         ModelEditorImpl editor = new ModelEditorImpl();
-System.err.println("\n\n\n**********************************\n\n\nPath="+builder+"\n\n\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        File[] files = new File(builder.toString()).listFiles();
+        System.err.println("\n\n\n**********************************\n\n\nPath="+ testDataPath +"\n\n\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        File[] files = new File(testDataPath).listFiles();
         File tmpProject = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
         tmpProject.deleteOnExit();
         for (int ndx = files.length; --ndx >= 0;) {

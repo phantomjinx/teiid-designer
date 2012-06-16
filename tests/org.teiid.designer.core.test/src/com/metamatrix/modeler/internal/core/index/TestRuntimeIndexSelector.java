@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
+
 import com.metamatrix.core.index.RuntimeIndexSelector;
 import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.internal.core.index.Index;
@@ -21,10 +23,10 @@ import com.metamatrix.internal.core.index.Index;
  */
 public class TestRuntimeIndexSelector extends TestCase {
 
-    private static final String TEST_INDEX_FILE_NAME = SmartTestDesignerSuite.getTestDataPath() + File.separator + "dummy.INDEX"; //$NON-NLS-1$
-    private static final String TEST_INDEX_FOLDER_NAME = SmartTestDesignerSuite.getTestDataPath();
-    private static final String TEST_ZIP_FILE_NAME = SmartTestDesignerSuite.getTestDataPath() + File.separator + "TestPartsSupplier.vdb"; //$NON-NLS-1$
-    private static final String TEST_ZIP_FILE_NAME2 = SmartTestDesignerSuite.getTestDataPath() + File.separator
+    private static final String TEST_INDEX_FILE_NAME = SmartTestDesignerSuite.getTestDataPath(TestRuntimeIndexSelector.class) + File.separator + "dummy.INDEX"; //$NON-NLS-1$
+    private static final String TEST_INDEX_FOLDER_NAME = SmartTestDesignerSuite.getTestDataPath(TestRuntimeIndexSelector.class);
+    private static final String TEST_ZIP_FILE_NAME = SmartTestDesignerSuite.getTestDataPath(TestRuntimeIndexSelector.class) + File.separator + "TestPartsSupplier.vdb"; //$NON-NLS-1$
+    private static final String TEST_ZIP_FILE_NAME2 = SmartTestDesignerSuite.getTestDataPath(TestRuntimeIndexSelector.class) + File.separator
                                                       + "TestPartsSupplierUpperCaseExtension.VDB"; //$NON-NLS-1$
 
     /**
@@ -38,7 +40,7 @@ public class TestRuntimeIndexSelector extends TestCase {
 
     public void testCreateWithNonExistentPath() {
         System.out.println("\nTestRuntimeIndexSelector.testCreateWithNonExistentPath()"); //$NON-NLS-1$
-        String filepath = SmartTestDesignerSuite.getTestDataPath() + File.separator + "nonExistentFile"; //$NON-NLS-1$
+        String filepath = SmartTestDesignerSuite.getTestDataPath(getClass()) + File.separator + "nonExistentFile"; //$NON-NLS-1$
         try {
             new RuntimeIndexSelector(filepath);
             fail("Expected failure but got success"); //$NON-NLS-1$

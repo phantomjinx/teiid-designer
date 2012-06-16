@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.emf.common.util.URI;
@@ -28,6 +30,7 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.util.XSDResourceFactoryImpl;
 import org.eclipse.xsd.util.XSDResourceImpl;
+
 import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.modeler.internal.ui.viewsupport.RelationalObjectBuilder;
 
@@ -39,7 +42,8 @@ public class TestGenerateVirtualFromXsdHelper extends TestCase {
     private static final String BT = "com.metamatrix.metamodels.relational.impl.BaseTableImpl";//$NON-NLS-1$
     private static final String COL = "com.metamatrix.metamodels.relational.impl.ColumnImpl";//$NON-NLS-1$
 
-    private final String testData = SmartTestDesignerSuite.getTestDataPath() + File.separator;
+    private static final String testData = SmartTestDesignerSuite.getTestDataPath(TestGenerateVirtualFromXsdHelper.class) + File.separator;
+    
     private final String targetPath = testData + "Junk.xmi";//$NON-NLS-1$
     private final String DLA1 = testData + "DAASC_214_to_IDE_Schema.xsd"; //$NON-NLS-1$
     private final String DLA2 = testData + "214_DAASC_to_IDE_Schema.xsd"; //$NON-NLS-1$

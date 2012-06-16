@@ -14,10 +14,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -26,8 +28,10 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.impl.XSDSchemaImpl;
 import org.eclipse.xsd.util.XSDConstants;
 import org.jdom.JDOMException;
+
 import com.metamatrix.common.protocol.URLHelper;
 import com.metamatrix.core.util.CoreStringUtil;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.metamodels.wsdl.WsdlPackage;
 import com.metamatrix.metamodels.wsdl.http.HttpPackage;
 import com.metamatrix.metamodels.wsdl.mime.MimePackage;
@@ -139,11 +143,11 @@ public class TestWsdlHelper extends TestCase {
     public void testConvertImportsToAbsolutePaths() {
     	URL url = null;
     	try {
-            String path = System.getProperty("user.dir").replace('\\', '/'); //$NON-NLS-1$
+    	    String path = SmartTestDesignerSuite.getTestDataPath(getClass());
             if (!path.endsWith("/")) { //$NON-NLS-1$
                 path = path + '/';
             }
-    		url = new URL("file", "localhost", path + "testdata/HelloService.wsdl"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    		url = new URL("file", "localhost", path + "HelloService.wsdl"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} catch (MalformedURLException e) {
 			fail(e.getMessage());
 		}

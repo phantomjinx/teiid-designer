@@ -8,10 +8,13 @@
 package com.metamatrix.ui.dialogs;
 
 import java.io.File;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.teiid.core.util.EquivalenceUtil;
+
 import com.metamatrix.core.util.SmartTestDesignerSuite;
 
 /**
@@ -31,7 +34,7 @@ public final class TestFileUiUtils extends TestCase {
     }
 
     static {
-        TEST_DIR = new File(SmartTestDesignerSuite.getTestDataPath());
+        TEST_DIR = new File(SmartTestDesignerSuite.getTestDataPath(TestFileUiUtils.class));
     }
 
     public TestFileUiUtils( String theTestName ) {

@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import junit.framework.TestCase;
 
 /**
@@ -38,7 +39,7 @@ public class TestStreamPipe extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         pipe = new StreamPipe();
-        dataStream = new FileInputStream(SmartTestDesignerSuite.getTestDataFile(DATA_FILE));
+        dataStream = new FileInputStream(SmartTestDesignerSuite.getTestDataFile(getClass(), DATA_FILE));
     }
 
     /*

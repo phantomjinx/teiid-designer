@@ -10,16 +10,22 @@ package com.metamatrix.modeler.jdbc.custom;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 
 
 /** 
  * @since 4.3
  */
 public class TestExcelDatabaseMetaDataHandler  extends TestCase{
+    
+    private static String excelTestFilePath = SmartTestDesignerSuite.getTestDataPath(TestExcelDatabaseMetaDataHandler.class) + File.separator + "Book1.xls";  //$NON-NLS-1$
+    
     public TestExcelDatabaseMetaDataHandler(String name) {
         super(name);
     }
@@ -30,7 +36,7 @@ public class TestExcelDatabaseMetaDataHandler  extends TestCase{
     }
     
     public void testLoadExcelDocument1() throws Exception{
-        File excelTestFile = new File("testdata/Book1.xls");//$NON-NLS-1$
+        File excelTestFile = new File(excelTestFilePath);
         ExcelDatabaseMetaDataHandler handler = new ExcelDatabaseMetaDataHandler(null, excelTestFile);
         handler.loadExcelDocument();
         assertTrue(handler.tables.next());
@@ -45,7 +51,7 @@ public class TestExcelDatabaseMetaDataHandler  extends TestCase{
     }
     
     public void testResultSetMetadata() throws Exception{
-        File excelTestFile = new File("testdata/Book1.xls");//$NON-NLS-1$
+        File excelTestFile = new File(excelTestFilePath);
         ExcelDatabaseMetaDataHandler handler = new ExcelDatabaseMetaDataHandler(null, excelTestFile);
         handler.loadExcelDocument();
         ResultSetMetaData rm = ((ResultSet)handler.columns.get("Test Table1".toUpperCase())).getMetaData();//$NON-NLS-1$

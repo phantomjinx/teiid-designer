@@ -30,6 +30,7 @@ import org.eclipse.xsd.impl.XSDFactoryImpl;
 
 import com.metamatrix.core.selection.TreeSelection;
 import com.metamatrix.core.util.PluginUtilImpl;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.metamodels.relational.impl.RelationalFactoryImpl;
 import com.metamatrix.metamodels.relationship.RelationshipMetamodelPlugin;
 import com.metamatrix.metamodels.relationship.impl.RelationshipFactoryImpl;
@@ -73,8 +74,11 @@ public class TestRelationalObjectGenerator extends TestCase {
 
     static {
         RelationshipMetamodelPlugin rmPlugin = new RelationshipMetamodelPlugin();
+        SmartTestDesignerSuite.mockStartBundle(rmPlugin, RelationshipMetamodelPlugin.PLUGIN_ID);
         ((PluginUtilImpl)RelationshipMetamodelPlugin.Util).initializePlatformLogger(rmPlugin);
+        
         Uml2Plugin uml2Plugin = new Uml2Plugin();
+        SmartTestDesignerSuite.mockStartBundle(uml2Plugin, Uml2Plugin.PLUGIN_ID);
         ((PluginUtilImpl)Uml2Plugin.Util).initializePlatformLogger(uml2Plugin);
 
         SELECTOR.open();

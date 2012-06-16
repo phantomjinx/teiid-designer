@@ -11,7 +11,9 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import com.metamatrix.core.util.PluginUtilImpl;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.metamodels.relationship.Relationship;
 import com.metamatrix.metamodels.relationship.RelationshipFactory;
 import com.metamatrix.metamodels.relationship.RelationshipMetamodelPlugin;
@@ -60,6 +62,7 @@ public class TestRelationshipPlugin extends TestCase {
             @Override
             public void setUp() {
                 RelationshipMetamodelPlugin plugin = new RelationshipMetamodelPlugin();
+                SmartTestDesignerSuite.mockStartBundle(plugin, RelationshipMetamodelPlugin.PLUGIN_ID);
                 ((PluginUtilImpl)RelationshipMetamodelPlugin.Util).initializePlatformLogger(plugin);
             }
 

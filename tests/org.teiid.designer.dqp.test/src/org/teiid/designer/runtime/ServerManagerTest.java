@@ -21,10 +21,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 
 /**
  * 
@@ -184,7 +188,7 @@ public class ServerManagerTest {
         // setup
         MockObjectFactory.createModelContainer();
 
-        this.mgr = new ServerManager("testdata/oldregistrydata");
+        this.mgr = new ServerManager(SmartTestDesignerSuite.getTestDataPath(getClass()) + File.separator + "oldregistrydata");
         this.mgr.restoreState();
         assertThat(this.mgr.getServers().size(), is(3));
 
@@ -209,7 +213,7 @@ public class ServerManagerTest {
         // setup
         MockObjectFactory.createModelContainer();
 
-        this.mgr = new ServerManager("testdata");
+        this.mgr = new ServerManager(SmartTestDesignerSuite.getTestDataPath(getClass()));
         this.mgr.restoreState();
         assertThat(this.mgr.getServers().size(), is(2));
 

@@ -13,10 +13,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import com.metamatrix.core.index.IDocument;
 import com.metamatrix.core.index.IEntryResult;
 import com.metamatrix.core.index.IIndexer;
@@ -35,13 +37,13 @@ import com.metamatrix.internal.core.index.WordEntry;
 public class TestCreateIndexFile extends TestCase {
 
     private static final String TEST_INDEX_FILE_NAME = "test.index"; //$NON-NLS-1$
-    private static final String TEST_MODEL_FILE_PATH = SmartTestDesignerSuite.getTestDataPath() + File.separator + "builtInDataTypes.xml"; //$NON-NLS-1$
-    private static final String TEST_INDEX_FILE_PATH = SmartTestDesignerSuite.getTestDataPath() + File.separator + TEST_INDEX_FILE_NAME;
+    private static final String TEST_MODEL_FILE_PATH = SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class) + File.separator + "builtInDataTypes.xml"; //$NON-NLS-1$
+    private static final String TEST_INDEX_FILE_PATH = SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class) + File.separator + TEST_INDEX_FILE_NAME;
 
     private static final String TEST_LARGER_INDEX_FILE_NAME = "larger_test.index"; //$NON-NLS-1$
-    private static final String TEST_LARGER_MODEL_FILE_PATH = SmartTestDesignerSuite.getTestDataPath() + File.separator
+    private static final String TEST_LARGER_MODEL_FILE_PATH = SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class) + File.separator
                                                               + "XAL_XML_TEST.xmi"; //$NON-NLS-1$
-    private static final String TEST_LARGER_INDEX_FILE_PATH = SmartTestDesignerSuite.getTestDataPath() + File.separator
+    private static final String TEST_LARGER_INDEX_FILE_PATH = SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class) + File.separator
                                                               + TEST_LARGER_INDEX_FILE_NAME;
 
     /**
@@ -171,7 +173,7 @@ public class TestCreateIndexFile extends TestCase {
         int nQueries = 5000;
         System.out.println(TEST_INDEX_FILE_PATH);
         final File testModelFile = new File(TEST_MODEL_FILE_PATH);
-        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath());
+        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class));
 
         final IDocument doc = new TestFileDocument(testModelFile);
         TestIndex index = null;
@@ -220,7 +222,7 @@ public class TestCreateIndexFile extends TestCase {
         int nQueries = 1000;
         System.out.println(TEST_LARGER_INDEX_FILE_PATH);
         final File testModelFile = new File(TEST_LARGER_MODEL_FILE_PATH);
-        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath());
+        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class));
 
         final IDocument doc = new TestFileDocument(testModelFile);
         TestIndex index = null;
@@ -269,7 +271,7 @@ public class TestCreateIndexFile extends TestCase {
         int nQueries = 1000;
         System.out.println(TEST_LARGER_INDEX_FILE_PATH);
         final File testModelFile = new File(TEST_LARGER_MODEL_FILE_PATH);
-        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath());
+        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class));
 
         final IDocument doc = new TestFileDocument(testModelFile);
         TestIndex index = null;
@@ -318,7 +320,7 @@ public class TestCreateIndexFile extends TestCase {
         int nOpens = 1000;
         System.out.println(TEST_LARGER_INDEX_FILE_PATH);
         final File testModelFile = new File(TEST_LARGER_MODEL_FILE_PATH);
-        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath());
+        final File indexDirectory = new File(SmartTestDesignerSuite.getTestDataPath(TestCreateIndexFile.class));
 
         final IDocument doc = new TestFileDocument(testModelFile);
         TestIndex index = null;

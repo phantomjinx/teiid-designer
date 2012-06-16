@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 
 import com.metamatrix.core.util.PluginUtilImpl;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.metamodels.relational.RelationalPlugin;
 import com.metamatrix.metamodels.relational.SearchabilityType;
 import com.metamatrix.metamodels.relational.util.RelationalTypeMapping;
@@ -75,8 +76,11 @@ public class TestJdbcRelationalPlugin extends TestCase {
             @Override
             public void setUp() {
                 JdbcRelationalPlugin jdbcRelationalPlugin = new JdbcRelationalPlugin();
+                SmartTestDesignerSuite.mockStartBundle(jdbcRelationalPlugin, com.metamatrix.modeler.jdbc.relational.ModelerJdbcRelationalConstants.PLUGIN_ID);
                 ((PluginUtilImpl)ModelerJdbcRelationalConstants.Util).initializePlatformLogger(jdbcRelationalPlugin);
+                
                 RelationalPlugin relationalPlugin = new RelationalPlugin();
+                SmartTestDesignerSuite.mockStartBundle(relationalPlugin, RelationalPlugin.PLUGIN_ID);
                 ((PluginUtilImpl)RelationalPlugin.Util).initializePlatformLogger(relationalPlugin);
                 ((RegistrySPI) ModelerCore.getRegistry()).unregister(ModelerCore.DEFAULT_CONTAINER_KEY);
             }

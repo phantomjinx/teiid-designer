@@ -28,7 +28,7 @@ import com.metamatrix.core.util.SmartTestDesignerSuite;
  */
 public class LocalTestXsdInstanceNode extends TestCase {
 
-    private static final String FOLDER = SmartTestDesignerSuite.getTestDataPath() + "/Cigna/"; //$NON-NLS-1$
+    private static final String FOLDER = SmartTestDesignerSuite.getTestDataPath(LocalTestXsdInstanceNode.class) + "/Cigna/"; //$NON-NLS-1$
 
     private static final String MEMBER_XSD = FOLDER + "member.xsd"; //$NON-NLS-1$
 

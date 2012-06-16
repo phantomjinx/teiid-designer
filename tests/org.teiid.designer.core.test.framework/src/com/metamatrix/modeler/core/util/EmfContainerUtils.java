@@ -8,10 +8,13 @@
 package com.metamatrix.modeler.core.util;
 
 import java.io.File;
+
 import junit.framework.Assert;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+
 import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.internal.core.container.ContainerImpl;
@@ -87,7 +90,7 @@ public class EmfContainerUtils {
     public static void addModel( final String filenameInTestData,
                                  final String containerName ) {
         final ContainerImpl theContainer = getContainer(containerName);
-        final File testFile = SmartTestDesignerSuite.getTestDataFile(filenameInTestData);
+        final File testFile = SmartTestDesignerSuite.getTestDataFile(EmfContainerUtils.class, filenameInTestData);
         final String fullPath = testFile.getAbsolutePath();
 
         // Add the model to the container ...

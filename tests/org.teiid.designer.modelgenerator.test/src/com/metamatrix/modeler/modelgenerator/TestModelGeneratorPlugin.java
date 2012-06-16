@@ -8,14 +8,18 @@
 package com.metamatrix.modeler.modelgenerator;
 
 import java.util.Date;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+
 import com.metamatrix.core.util.PluginUtilImpl;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 
 /**
  * TestModelGeneratorPlugin
@@ -58,6 +62,7 @@ public class TestModelGeneratorPlugin extends TestCase {
             @Override
             public void setUp() {
                 ModelGeneratorPlugin plugin = new ModelGeneratorPlugin();
+                SmartTestDesignerSuite.mockStartBundle(plugin, ModelGeneratorPlugin.PLUGIN_ID);
                 ((PluginUtilImpl)ModelGeneratorPlugin.Util).initializePlatformLogger(plugin);
             }
 

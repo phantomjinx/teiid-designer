@@ -11,7 +11,9 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import com.metamatrix.core.util.PluginUtilImpl;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.ui.UiConstants;
 import com.metamatrix.ui.UiPlugin;
 import com.metamatrix.ui.product.AbstractProductCustomizer;
@@ -40,6 +42,7 @@ public class TestAbstractProductCustomizer extends TestCase {
             @Override
             public void setUp() throws Exception {
                 UiPlugin plugin = new UiPlugin();
+                SmartTestDesignerSuite.mockStartBundle(plugin, UiConstants.PLUGIN_ID);
                 ((PluginUtilImpl)UiConstants.Util).initializePlatformLogger(plugin);
             }
         };

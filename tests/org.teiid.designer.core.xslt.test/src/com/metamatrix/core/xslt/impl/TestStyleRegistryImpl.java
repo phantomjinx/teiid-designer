@@ -9,7 +9,9 @@ package com.metamatrix.core.xslt.impl;
 
 import java.io.File;
 import java.util.Collection;
+
 import junit.framework.TestCase;
+
 import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.core.xslt.Style;
 import com.metamatrix.core.xslt.StyleFromResource;
@@ -56,7 +58,7 @@ public class TestStyleRegistryImpl extends TestCase {
         this.registry = new StyleRegistryImpl();
         this.registryWithNoDescriptions = new StyleRegistryImpl();
 
-        final File testDataFolder = new File(SmartTestDesignerSuite.getTestDataPath());
+        final File testDataFolder = new File(SmartTestDesignerSuite.getTestDataPath(getClass()));
 
         // Create some styles
         for (int i = 0; i < STYLE_NAMES.length; ++i) {

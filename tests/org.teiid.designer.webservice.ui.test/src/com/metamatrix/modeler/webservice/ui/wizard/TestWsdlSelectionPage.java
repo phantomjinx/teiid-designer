@@ -11,9 +11,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
+
 import com.metamatrix.common.protocol.URLHelper;
 import com.metamatrix.core.util.CoreStringUtil;
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.modeler.internal.webservice.ui.wizard.WsdlSelectionPage;
 
 /**
@@ -71,11 +74,12 @@ public class TestWsdlSelectionPage extends TestCase {
     }
 
     public void helpTestFormatPath( String pathSegment ) throws Exception {
-        String path = System.getProperty("user.dir").replace('\\', '/'); //$NON-NLS-1$
+        String path = SmartTestDesignerSuite.getTestDataPath(getClass());
         if (!path.endsWith("/")) { //$NON-NLS-1$
             path = path + '/';
         }
-        URL newUrl = new URL("file", "", path + pathSegment + "testdata/HelloService.wsdl"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        URL newUrl = new URL("file", "", path + pathSegment + "HelloService.wsdl"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String formattedPath = WsdlSelectionPage.formatPath(newUrl);
         File wsdlFile = URLHelper.createFileFromUrl(newUrl, CoreStringUtil.createFileName(formattedPath), XSD_SUFFIX);
         String name = wsdlFile.getName();

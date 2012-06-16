@@ -9,12 +9,15 @@ package com.metamatrix.modeler.internal.core.index;
 
 import java.io.File;
 import java.io.IOException;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.ecore.resource.Resource;
+
 import com.metamatrix.core.util.PluginUtilImpl;
 import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.internal.core.index.Index;
@@ -28,10 +31,10 @@ public class TestResourceFileIndexSelector extends TestCase {
     // -------------------------------------------------
     // Variables initialized during one-time startup ...
     // -------------------------------------------------
-    private static final String TEST_MODEL_FILE_NAME = SmartTestDesignerSuite.getTestDataPath() + File.separator
+    private static final String TEST_MODEL_FILE_NAME = SmartTestDesignerSuite.getTestDataPath(TestResourceFileIndexSelector.class) + File.separator
                                                        + "PartsSupplierOracle100.xmi"; //$NON-NLS-1$
-    private static final String TEST_MODEL_FOLDER_NAME = SmartTestDesignerSuite.getTestDataPath();
-    private static final String TEST_ZIP_FILE_NAME = SmartTestDesignerSuite.getTestDataPath() + File.separator + "builtInDatatypes.zip"; //$NON-NLS-1$
+    private static final String TEST_MODEL_FOLDER_NAME = SmartTestDesignerSuite.getTestDataPath(TestResourceFileIndexSelector.class);
+    private static final String TEST_ZIP_FILE_NAME = SmartTestDesignerSuite.getTestDataPath(TestResourceFileIndexSelector.class) + File.separator + "builtInDatatypes.zip"; //$NON-NLS-1$
 
     // ---------------------------------------
     // Variables initialized for each test ...
@@ -107,6 +110,7 @@ public class TestResourceFileIndexSelector extends TestCase {
     public static void oneTimeSetUp() {
         System.setProperty("user.dir", SmartTestDesignerSuite.getTestScratchPath()); //$NON-NLS-1$
         ModelerCore plugin = new ModelerCore();
+        SmartTestDesignerSuite.mockStartBundle(plugin, ModelerCore.PLUGIN_ID);
         ((PluginUtilImpl)ModelerCore.Util).initializePlatformLogger(plugin);
     }
 
@@ -158,7 +162,7 @@ public class TestResourceFileIndexSelector extends TestCase {
 
     public void testCreate2() {
         System.out.println("\nTestResourceFileIndexSelector.testCreate2()"); //$NON-NLS-1$
-        String filepath = SmartTestDesignerSuite.getTestDataPath() + File.separator + "nonExistentFile"; //$NON-NLS-1$
+        String filepath = SmartTestDesignerSuite.getTestDataPath(getClass()) + File.separator + "nonExistentFile"; //$NON-NLS-1$
         try {
             new ResourceFileIndexSelector(filepath);
             fail("Expected failure but got success"); //$NON-NLS-1$
