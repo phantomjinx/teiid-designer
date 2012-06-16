@@ -7,18 +7,22 @@
  */
 package com.metamatrix.modeler.modelgenerator.wsdl;
 
+import java.io.File;
+
 import junit.framework.TestCase;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import com.metamatrix.core.util.SmartTestDesignerSuite;
 import com.metamatrix.modeler.modelgenerator.wsdl.model.Model;
 import com.metamatrix.modeler.modelgenerator.wsdl.model.ModelGenerationException;
 
 public class WSDLReaderTest extends TestCase {
 
-    public static final String CIS_WSDL = "./src/sources/CountryInfoService.wsdl"; //$NON-NLS-1$
-    public static final String badWSDL = "./src/sources/InvalidCountryInfoService.wsdl"; //$NON-NLS-1$
+    public static final String CIS_WSDL = SmartTestDesignerSuite.getTestDataPath(WSDLReaderTest.class) + File.separator + "CountryInfoService.wsdl"; //$NON-NLS-1$
+    public static final String badWSDL = SmartTestDesignerSuite.getTestDataPath(WSDLReaderTest.class) + File.separator + "InvalidCountryInfoService.wsdl"; //$NON-NLS-1$
 
     public WSDLReaderTest( String name ) {
         super(name);

@@ -8,14 +8,14 @@
 package com.metamatrix.modeler.modelgenerator.wsdl.model;
 
 import junit.framework.TestCase;
+
 import com.metamatrix.modeler.modelgenerator.wsdl.WSDLReader;
+import com.metamatrix.modeler.modelgenerator.wsdl.WSDLReaderTest;
 
 /**
  * 
  */
 public class ModelTest extends TestCase {
-
-    public static final String CIS_WSDL = "./src/sources/CountryInfoService.wsdl"; //$NON-NLS-1$
 
     /**
      * {@inheritDoc}
@@ -31,7 +31,7 @@ public class ModelTest extends TestCase {
      * Test method for 'com.metamatrix.modeler.modelgenerator.wsdl.WSDLReader.getModel()'
      */
     public void testGetModel() throws ModelGenerationException {
-        WSDLReader reader = new WSDLReader(CIS_WSDL);
+        WSDLReader reader = new WSDLReader(WSDLReaderTest.CIS_WSDL);
         Model model = reader.getModel();
         assertNotNull(model);
         assertEquals("Incorrect namespace count", 4, model.getNamespaces().size()); //$NON-NLS-1$
