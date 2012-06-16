@@ -62,7 +62,7 @@ import com.metamatrix.ui.ICredentialsCommon.SecurityType;
 public class ModelBuilder {
 
     private String m_wsdlURI;
-    private SecurityType m_securityType;
+    private SecurityType m_securityType = SecurityType.None;
     private String m_userName;
     private String m_password;
 
