@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.command.Command;
@@ -30,6 +31,7 @@ import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.provider.ChangeNotifier;
 import org.teiid.core.TeiidRuntimeException;
+
 import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.CoreStringUtil;
 import com.metamatrix.modeler.core.ModelerCore;
@@ -485,16 +487,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
         return this.overrideRollback;
     }
 
-    /**
-     * Method to override the rollback functionality of this class and place it on the Source of the transaction. Even if a txn
-     * was NOT undoable, we were still treating it under the hood as undoable and this was potentially causing memory issues for
-     * txn's where a large amount of work was being done (i.e. New Model Wizards, XML Document model builder, etc.) If set to
-     * TRUE, then the txn Command will NOT be created and txn's will NOT be cached. This is implemented to allow actions like
-     * NewModelWizard to NOT care about the undoablity of any of the add/remove/change commands created when building the model.
-     * 
-     * @return
-     * @since 5.0.2
-     */
+    @Override
     public void setOverrideRollback( boolean b ) {
         this.overrideRollback = b;
     }
@@ -525,14 +518,7 @@ public class UnitOfWorkImpl implements UnitOfWork {
         return this.state;
     }
 
-    /**
-     * Method add a new ProcessedNotificationResult for post-commit processing. Method looks for existing result referencing the
-     * same resource, then appends the dereferenced resources to it's list, else it adds a new result to the cache for use in
-     * final processing.
-     * 
-     * @return
-     * @since 5.0.2
-     */
+    @Override
     public void addProcessedNotificationResult( ProcessedNotificationResult result ) {
         if (processedNotificationResults.isEmpty()) {
             processedNotificationResults.add(result);

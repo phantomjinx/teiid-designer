@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -35,10 +36,11 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
-import com.metamatrix.common.xmi.XMIHeader;
 import org.teiid.core.id.IDGenerator;
 import org.teiid.core.id.InvalidIDException;
 import org.teiid.core.id.ObjectID;
+
+import com.metamatrix.common.xmi.XMIHeader;
 import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.CoreStringUtil;
 import com.metamatrix.metamodels.core.Annotation;
@@ -46,6 +48,7 @@ import com.metamatrix.metamodels.core.AnnotationContainer;
 import com.metamatrix.metamodels.core.Identifiable;
 import com.metamatrix.metamodels.core.ModelAnnotation;
 import com.metamatrix.metamodels.core.ModelType;
+import com.metamatrix.modeler.core.AbstractModelerTask;
 import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.ModelerCoreException;
 import com.metamatrix.modeler.core.ModelerCoreRuntimeException;
@@ -574,26 +577,29 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
             if (c == null || c.isEmpty()) {
                 return false;
             }
+            
+            
 
-            final boolean startTxn = getTxn();
-            try {
-                final EList vals = new BasicEList(c);
-                final int[] removedIndexes = getIndexes(vals);
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					final EList vals = new BasicEList(c);
+					final int[] removedIndexes = getIndexes(vals);
 
-                owner.removeMany(c);
+					owner.removeMany(c);
 
-                if (vals.size() == 1) {
-                    eNotify(createNotification(Notification.REMOVE, vals.get(0), null, removedIndexes[0]));
-                } else {
-                    eNotify(createNotification(Notification.REMOVE_MANY, vals, removedIndexes, removedIndexes[0]));
-                }
-
-                return true;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+					if (vals.size() == 1) {
+						eNotify(createNotification(Notification.REMOVE, vals.get(0), null, removedIndexes[0]));
+					} else {
+						eNotify(createNotification(Notification.REMOVE_MANY, vals, removedIndexes, removedIndexes[0]));
+					}
+				}
+            };
+            
+            getTxn(task);
+            
+            return true;
         }
 
         private int[] getIndexes( final Collection vals ) {
@@ -623,55 +629,55 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
                 return false;
             }
 
-            final boolean startTxn = getTxn();
-            try {
-                // super.addAll(c);
-                final int index = size;
-                owner.addMany(c);
-                final EList vals = new BasicEList(c);
-                eNotify(createNotification(Notification.ADD_MANY, null, vals, index, true));
-                return true;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					final int index = size;
+					owner.addMany(c);
+					final EList vals = new BasicEList(c);
+					eNotify(createNotification(Notification.ADD_MANY, null, vals, index, true));
+				}
+            };
+            
+            getTxn(task);
+            return true;
         }
 
         /**
          * @see java.util.List#add(int, java.lang.Object)
          */
         @Override
-        public void add( final int index,
-                         final Object element ) {
-            final boolean startTxn = getTxn();
-            try {
-                super.add(index, element);
-                attachToResource(element);
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
-
+        public void add( final int index, final Object element ) {
+        	AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork) {
+					MtkContentsEList.super.add(index, element);
+					attachToResource(element);
+				}
+        	};
+            
+            getTxn(task);
         }
-
+        
         /**
          * @see java.util.Collection#add(java.lang.Object)
          */
         @Override
         public boolean add( final Object o ) {
-            final boolean startTxn = getTxn();
-            try {
-                final boolean result = super.add(o);
-                attachToResource(o);
-                return result;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
-
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					boolean result = MtkContentsEList.super.add(o);
+                	attachToResource(o);
+                	this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (Boolean) task.getReturnValue();
         }
 
         /**
@@ -680,16 +686,18 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
         @Override
         public boolean addAll( final int index,
                                final Collection c ) {
-            final boolean startTxn = getTxn();
-            try {
-                final boolean result = super.addAll(index, c);
-                attachToResource(c);
-                return result;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					boolean result = MtkContentsEList.super.addAll(index, c);
+					attachToResource(c);
+	                this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (Boolean) task.getReturnValue();
         }
 
         /**
@@ -697,14 +705,17 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
          */
         @Override
         public boolean remove( final Object o ) {
-            final boolean startTxn = getTxn();
-            try {
-                return super.remove(o);
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+                	boolean result = MtkContentsEList.super.remove(o);
+                	this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (Boolean) task.getReturnValue();
         }
 
         /**
@@ -717,16 +728,19 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
             if (object == null) {
                 return notifications;
             }
-            final boolean startTxn = getTxn();
-            try {
-                final NotificationChain result = super.inverseAdd(object, notifications);
-                attachToResource(object);
-                return result;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					NotificationChain result = MtkContentsEList.super.inverseAdd(object, notifications);
+					attachToResource(object);
+					this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (NotificationChain) task.getReturnValue();
         }
 
         /**
@@ -739,14 +753,18 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
             if (object == null) {
                 return notifications;
             }
-            final boolean startTxn = getTxn();
-            try {
-                return super.inverseRemove(object, notifications);
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					NotificationChain result = MtkContentsEList.super.inverseRemove(object, notifications);
+					this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (NotificationChain) task.getReturnValue();
         }
 
         /**
@@ -754,16 +772,18 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
          */
         @Override
         public boolean addAllUnique( final Collection collection ) {
-            final boolean startTxn = getTxn();
-            try {
-                final boolean result = super.addAllUnique(collection);
-                attachToResource(collection);
-                return result;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					boolean result = MtkContentsEList.super.addAllUnique(collection);
+					attachToResource(collection);
+					this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (Boolean) task.getReturnValue();
         }
 
         /**
@@ -772,16 +792,18 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
         @Override
         public boolean addAllUnique( final int index,
                                      final Collection collection ) {
-            final boolean startTxn = getTxn();
-            try {
-                final boolean result = super.addAllUnique(index, collection);
-                attachToResource(collection);
-                return result;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					boolean result = MtkContentsEList.super.addAllUnique(index, collection);
+					attachToResource(collection);
+					this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (Boolean) task.getReturnValue();
         }
 
         /**
@@ -790,15 +812,16 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
         @Override
         public void addUnique( final int index,
                                final Object object ) {
-            final boolean startTxn = getTxn();
-            try {
-                super.addUnique(index, object);
-                attachToResource(object);
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					MtkContentsEList.super.addUnique(index, object);
+					attachToResource(object);
+				}
+            };
+            
+            getTxn(task);
         }
 
         /**
@@ -806,15 +829,16 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
          */
         @Override
         public void addUnique( final Object object ) {
-            final boolean startTxn = getTxn();
-            try {
-                super.addUnique(object);
-                attachToResource(object);
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					MtkContentsEList.super.addUnique(object);
+					attachToResource(object);
+				}
+            };
+            
+            getTxn(task);
         }
 
         /**
@@ -824,16 +848,18 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
         @Override
         public NotificationChain basicAdd( final Object object,
                                            final NotificationChain notifications ) {
-            final boolean startTxn = getTxn();
-            try {
-                final NotificationChain result = super.basicAdd(object, notifications);
-                attachToResource(object);
-                return result;
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					final NotificationChain result = MtkContentsEList.super.basicAdd(object, notifications);
+					attachToResource(object);
+					this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (NotificationChain) task.getReturnValue();
         }
 
         /**
@@ -843,14 +869,17 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
         @Override
         public NotificationChain basicRemove( final Object object,
                                               final NotificationChain notifications ) {
-            final boolean startTxn = getTxn();
-            try {
-                return super.basicRemove(object, notifications);
-            } finally {
-                if (startTxn) {
-                    commitTxn();
-                }
-            }
+            AbstractModelerTask task = new AbstractModelerTask() {
+				
+				@Override
+				public void execute(UnitOfWork unitOfWork)  {
+					NotificationChain result = MtkContentsEList.super.basicRemove(object, notifications);
+					this.setReturnValue(result);
+				}
+            };
+            
+            getTxn(task);
+            return (NotificationChain) task.getReturnValue();
         }
 
         void attachToResource( final Object object ) {
@@ -874,14 +903,9 @@ public class MtkXmiResourceImpl extends XMIResourceImpl implements EmfResource, 
             }
         }
 
-        private boolean getTxn() {
-            return ModelerCore.startTxn(null, this);
+        private void getTxn(AbstractModelerTask task) {
+            ModelerCore.startTxn(null, this, task);
         }
-
-        private void commitTxn() {
-            ModelerCore.commitTxn();
-        }
-
     }
 
     /**

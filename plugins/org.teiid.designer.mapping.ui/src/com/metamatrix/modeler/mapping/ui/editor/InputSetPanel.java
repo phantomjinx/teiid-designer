@@ -10,6 +10,7 @@ package com.metamatrix.modeler.mapping.ui.editor;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor.PropertyValueWrapper;
 import org.eclipse.jface.viewers.CellEditor;
@@ -41,13 +42,16 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
+
 import com.metamatrix.metamodels.transformation.InputParameter;
 import com.metamatrix.metamodels.transformation.InputSet;
 import com.metamatrix.metamodels.transformation.MappingClass;
 import com.metamatrix.metamodels.transformation.MappingClassColumn;
 import com.metamatrix.metamodels.transformation.TransformationFactory;
+import com.metamatrix.modeler.core.AbstractModelerTask;
 import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.ModelerCoreException;
+import com.metamatrix.modeler.core.transaction.UnitOfWork;
 import com.metamatrix.modeler.internal.mapping.factory.TreeMappingAdapter;
 import com.metamatrix.modeler.internal.ui.explorer.ModelExplorerLabelProvider;
 import com.metamatrix.modeler.internal.ui.viewsupport.ModelObjectUtilities;
@@ -386,32 +390,23 @@ public class InputSetPanel extends SashForm implements SelectionListener, UiCons
      * Handler for Bind Button
      */
     void bindButtonPressed() {
-        boolean started = ModelerCore.startTxn(UNDO_BIND, this);
-        boolean succeeded = false;
-        try {
-            // get the selected item from the tree
-            ISelection is = tvTreeViewer.getSelection();
-            EObject mcColumn = SelectionUtilities.getSelectedEObject(is);
+        ModelerCore.startTxn(UNDO_BIND, this, new AbstractModelerTask() {
+        	@Override
+        	public void execute(UnitOfWork uow) {
+        		// get the selected item from the tree
+                ISelection is = tvTreeViewer.getSelection();
+                EObject mcColumn = SelectionUtilities.getSelectedEObject(is);
 
-            // get the selected item
-            is = this.tableViewer.getSelection();
-            BindingAdapter bindingAdapter = (BindingAdapter)SelectionUtilities.getSelectedObject(is);
+                // get the selected item
+                is = tableViewer.getSelection();
+                BindingAdapter bindingAdapter = (BindingAdapter)SelectionUtilities.getSelectedObject(is);
 
-            if (bindingAdapter != null) {
-                bindingAdapter.setMapping(mcColumn);
-                refreshFromBusinessObject();
-            }
-            succeeded = true;
-        } finally {
-            if (started) {
-                if (succeeded) {
-                    ModelerCore.commitTxn();
-                } else {
-                    ModelerCore.rollbackTxn();
+                if (bindingAdapter != null) {
+                    bindingAdapter.setMapping(mcColumn);
+                    refreshFromBusinessObject();
                 }
-            }
-
-        }
+        	}
+		});
 
         setButtonStates();
     }

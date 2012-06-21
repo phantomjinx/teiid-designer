@@ -9,7 +9,9 @@ package com.metamatrix.modeler.core.transaction;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.notify.Notification;
+
 import com.metamatrix.modeler.core.ModelerCoreException;
+import com.metamatrix.modeler.core.util.ProcessedNotificationResult;
 
 /**
  * Interface for the UnitOfWork Object for an Emf Container
@@ -69,4 +71,26 @@ public interface UnitOfWork extends MtkTransaction{
      * @param b
      */
     public void setUndoable(boolean b); 
+    
+    /**
+     * Method to override the rollback functionality of this class and place it on the Source of the transaction. Even if a txn
+     * was NOT undoable, we were still treating it under the hood as undoable and this was potentially causing memory issues for
+     * txn's where a large amount of work was being done (i.e. New Model Wizards, XML Document model builder, etc.) If set to
+     * TRUE, then the txn Command will NOT be created and txn's will NOT be cached. This is implemented to allow actions like
+     * NewModelWizard to NOT care about the undoablity of any of the add/remove/change commands created when building the model.
+     * 
+     * @return
+     * @since 5.0.2
+     */
+    public void setOverrideRollback( boolean b );
+
+    /**
+     * Method add a new ProcessedNotificationResult for post-commit processing. Method looks for existing result referencing the
+     * same resource, then appends the dereferenced resources to it's list, else it adds a new result to the cache for use in
+     * final processing.
+     * 
+     * @return
+     * @since 5.0.2
+     */
+	void addProcessedNotificationResult(ProcessedNotificationResult result);
 }

@@ -49,6 +49,7 @@ import com.metamatrix.core.modeler.CoreModelerPlugin;
 import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.CoreStringUtil;
 import com.metamatrix.core.util.RunnableState;
+import com.metamatrix.modeler.core.AbstractModelerTask;
 import com.metamatrix.modeler.core.ModelerCore;
 import com.metamatrix.modeler.core.ModelerCoreException;
 import com.metamatrix.modeler.core.ModelerCoreRuntimeException;
@@ -69,7 +70,6 @@ import com.metamatrix.modeler.core.util.ExternalResourceImportsHelper;
 import com.metamatrix.modeler.core.util.ProcessedNotificationResult;
 import com.metamatrix.modeler.internal.core.ModelEditorImpl;
 import com.metamatrix.modeler.internal.core.resource.EmfResourceSetImpl;
-import com.metamatrix.modeler.internal.core.transaction.UnitOfWorkImpl;
 import com.metamatrix.modeler.internal.core.transaction.UnitOfWorkProviderImpl;
 
 /**
@@ -991,99 +991,89 @@ public class ContainerImpl implements Container, IEditingDomainProvider {
         return ModelerCore.isResourceInExternalResourceSet(theResource);
     }
 
-    protected void processNotification( Notification notification ) {
+    protected void processNotification( final Notification notification ) {
         if (!shouldProcess(notification)) {
             return;
         }
-
-        Resource resource = null;
-        Object notifier = notification.getNotifier();
-        int eventType = notification.getEventType();
-        boolean doit = false;
-
-        // mark the resource modified if the notification is for (1) a resource that is not a member of
-        // an external resource set or for (2) an EObject of a resource.
-        if (notifier instanceof Resource) {
-            // make sure the feature is NOT the modified feature
-            resource = (Resource)notifier;
-            int featureId = notification.getFeatureID(resource.getClass());
-            if (eventType != Notification.REMOVING_ADAPTER && featureId != Resource.RESOURCE__IS_LOADED
-                && featureId != Resource.RESOURCE__IS_MODIFIED && featureId != Resource.RESOURCE__RESOURCE_SET
-                && !isExternalResourceSetMember(resource)) {
-                doit = true;
-            }
-        } else if (notifier instanceof EObject) {
-            resource = ((EObject)notifier).eResource();
-            doit = true;
-        }
-
+        
         // Ensure change occurs within a transaction (potentially after the fact)
-        Object feature = notification.getFeature();
-        Object newVal = notification.getNewValue();
+        final Object feature = notification.getFeature();
+        final Object newVal = notification.getNewValue();
         String desc = (feature == null ? null : ModelerCore.Util.getString("ContainerImpl.setFeatureDescription", feature, newVal)); //$NON-NLS-1$
-        boolean xActionStarted = ModelerCore.startTxn(desc, this);
-        boolean xActionSucceeded = false;
-        try {
-            try {
-                Container ctnr = ModelerCore.getModelContainer();
-                if (xActionStarted && CoreModelerPlugin.getTransactionManager() != null && feature != null
-                    && eventType == Notification.SET && ctnr != null && notifier instanceof EObject
-                    && (!(resource instanceof XResource) || !((XResource)resource).isLoading())) {
-                    CommandParameter prm = new CommandParameter(notifier, feature, newVal);
-                    Command cmd = ((ContainerImpl)ctnr).getEditingDomain().createCommand(SetCommand.class, prm);
-                    ((ModelEditorImpl)ModelerCore.getModelEditor()).postExecuteCommand((EObject)notifier, cmd);
-                }
-            } catch (CoreException err) {
-                ModelerCore.Util.log(err);
-            }
+        
+        ModelerCore.startTxn(desc, this, new AbstractModelerTask() {
+			
+			@Override
+			public void execute(UnitOfWork unitOfWork) throws ModelerCoreException {
+				Resource resource = null;
+		        Object notifier = notification.getNotifier();
+		        int eventType = notification.getEventType();
+		        boolean doit = false;
 
-            final UnitOfWorkImpl txn = (UnitOfWorkImpl)getEmfTransactionProvider().getCurrent();
+		        // mark the resource modified if the notification is for (1) a resource that is not a member of
+		        // an external resource set or for (2) an EObject of a resource.
+		        if (notifier instanceof Resource) {
+		            // make sure the feature is NOT the modified feature
+		            resource = (Resource)notifier;
+		            int featureId = notification.getFeatureID(resource.getClass());
+		            if (eventType != Notification.REMOVING_ADAPTER && featureId != Resource.RESOURCE__IS_LOADED
+		                && featureId != Resource.RESOURCE__IS_MODIFIED && featureId != Resource.RESOURCE__RESOURCE_SET
+		                && !isExternalResourceSetMember(resource)) {
+		                doit = true;
+		            }
+		        } else if (notifier instanceof EObject) {
+		            resource = ((EObject)notifier).eResource();
+		            doit = true;
+		        }
 
-            boolean shouldCheckImports = false;
-            if (resource != null) {
-                if (resource instanceof XResource) {
-                    XResource xRes = (XResource)resource;
-                    shouldCheckImports = !xRes.isLoading() && !xRes.isUnloading();
-                } else {
-                    shouldCheckImports = true;
-                }
+		        try {
+		        	Container ctnr = ModelerCore.getModelContainer();
+		        	if (CoreModelerPlugin.getTransactionManager() != null && feature != null
+		        			&& eventType == Notification.SET && ctnr != null && notifier instanceof EObject
+		        			&& (!(resource instanceof XResource) || !((XResource)resource).isLoading())) {
+		        		CommandParameter prm = new CommandParameter(notifier, feature, newVal);
+		        		Command cmd = ((ContainerImpl)ctnr).getEditingDomain().createCommand(SetCommand.class, prm);
+		        		((ModelEditorImpl)ModelerCore.getModelEditor()).postExecuteCommand((EObject)notifier, cmd);
+		        	}
+		        } catch (CoreException err) {
+		        	ModelerCore.Util.log(err);
+		        }
 
-                if (shouldCheckImports) {
-                    ProcessedNotificationResult result = ExternalResourceImportsHelper.processNotification(notification);
-                    if (result != null && !result.getDereferencedResources().isEmpty()) {
-                        txn.addProcessedNotificationResult(result);
-                    }
-                }
-            }
+		        boolean shouldCheckImports = false;
+		        if (resource != null) {
+		        	if (resource instanceof XResource) {
+		        		XResource xRes = (XResource)resource;
+		        		shouldCheckImports = !xRes.isLoading() && !xRes.isUnloading();
+		        	} else {
+		        		shouldCheckImports = true;
+		        	}
 
-            //debug("Change", resource, theNotification); //$NON-NLS-1$
-            // now mark as modified if it is (1) not already modified or if (2) we're not rolling back a transaction
-            if (doit && (resource != null) && !resource.isModified() && !txn.isRollingBack()) {
-                resource.setModified(true);
-            }
+		        	if (shouldCheckImports) {
+		        		ProcessedNotificationResult result = ExternalResourceImportsHelper.processNotification(notification);
+		        		if (result != null && !result.getDereferencedResources().isEmpty()) {
+		        			unitOfWork.addProcessedNotificationResult(result);
+		        		}
+		        	}
+		        }
 
-            try {
-                if (txn.isStarted() || txn.isRollingBack()) {
-                    // now let the transaction fire the events to the workspace
-                    txn.processNotification(notification);
-                } else {
-                    notifyForClosedUoW(txn, notification);
-                }
-            } catch (ModelerCoreException e) {
-                ModelerCore.Util.log(e);
-            }
+		        //debug("Change", resource, theNotification); //$NON-NLS-1$
+		        // now mark as modified if it is (1) not already modified or if (2) we're not rolling back a transaction
+		        if (doit && (resource != null) && !resource.isModified() && !unitOfWork.isRollingBack()) {
+		        	resource.setModified(true);
+		        }
 
-            // Mark transaction as succeeded so it gets committed
-            xActionSucceeded = true;
-        } finally {
-            if (xActionStarted) {
-                if (xActionSucceeded) {
-                    ModelerCore.commitTxn();
-                } else {
-                    ModelerCore.rollbackTxn();
-                }
-            }
-        }
+		        try {
+		        	if (unitOfWork != null && (unitOfWork.isStarted() || unitOfWork.isRollingBack())) {
+		        		// now let the transaction fire the events to the workspace
+		        		unitOfWork.processNotification(notification);
+		        	} else {
+		        		notifyForClosedUoW(unitOfWork, notification);
+		        	}
+		        } catch (ModelerCoreException e) {
+		        	ModelerCore.Util.log(e);
+		        }
+			}
+		});
     }
 
     public static void debug( String heading,
@@ -1155,7 +1145,7 @@ public class ContainerImpl implements Container, IEditingDomainProvider {
      * If there is no currently started uow check to see if we are dealing with non-proxied metamodel objects. If so, start the
      * uow, process the notification and commit the uow.
      */
-    private void notifyForClosedUoW( final UnitOfWorkImpl txn,
+    private void notifyForClosedUoW( final UnitOfWork txn,
                                      final Notification msg ) {
         final Object notifier = msg.getNotifier();
         if (notifier instanceof EObject) {

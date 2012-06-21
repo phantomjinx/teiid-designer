@@ -8,17 +8,22 @@
 package com.metamatrix.modeler.core;
 
 import java.util.Date;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 
+import com.metamatrix.modeler.core.transaction.UnitOfWork;
+
 /**
  * TestModelerCore
  */
+@SuppressWarnings("javadoc")
 public class TestModelerCore extends TestCase {
 
     /**
@@ -86,7 +91,7 @@ public class TestModelerCore extends TestCase {
     // T E S T C A S E S
     // =========================================================================
 
-    public void testNonPlatformGetStringWithNullKey() {
+	public void testNonPlatformGetStringWithNullKey() {
         final String key = null;
         final String expectedValue = "<No message available>"; //$NON-NLS-1$
         helpTestGetString(key, expectedValue);
@@ -257,6 +262,18 @@ public class TestModelerCore extends TestCase {
         if (ModelerCore.getRegistry() == null) {
             fail("Registry should never be null"); //$NON-NLS-1$
         }
+    }
+    
+    public void testSuccessfulTransaction() {
+    	AbstractModelerTask task = new AbstractModelerTask() {
+			
+			@Override
+			public void execute(UnitOfWork unitOfWork) throws ModelerCoreException {
+				System.out.println("Hello");
+			}
+		};
+		
+		ModelerCore.startTxn("Test Transaction", this, task);
     }
 
 }

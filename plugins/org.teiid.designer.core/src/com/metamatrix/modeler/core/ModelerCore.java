@@ -359,15 +359,11 @@ public class ModelerCore extends Plugin implements DeclarativeTransactionManager
     /**
      * Commit the current UnitOfWork for the model container
      */
-    public static void commitTxn() {
-        try {
-            final UnitOfWork uow = getCurrentUoW();
-            if (uow != null) {
-                uow.commit();
-            }
-        } catch (final ModelerCoreException e) {
-            Util.log(IStatus.ERROR, e, e.getMessage());
-        }
+    private static void commitTxn() throws ModelerCoreException {
+    	final UnitOfWork uow = getCurrentUoW();
+    	if (uow != null) {
+    		uow.commit();
+    	}
     }
 
     /**
@@ -1428,15 +1424,11 @@ public class ModelerCore extends Plugin implements DeclarativeTransactionManager
     /**
      * Rollback the current UnitOfWork for the model container
      */
-    public static void rollbackTxn() {
-        try {
-            final UnitOfWork uow = getCurrentUoW();
-            if (uow != null) {
-                uow.rollback();
-            }
-        } catch (final ModelerCoreException e) {
-            Util.log(IStatus.ERROR, e, e.getMessage());
-        }
+    private static void rollbackTxn() throws ModelerCoreException {
+    	final UnitOfWork uow = getCurrentUoW();
+    	if (uow != null) {
+    		uow.rollback();
+    	}
     }
 
     /**
@@ -1479,44 +1471,77 @@ public class ModelerCore extends Plugin implements DeclarativeTransactionManager
      * attributes. NOTE : UoW attributes will not be updated if this call does not result in a new UoW.
      * 
      * @param isSignificant
+     * @param isUndoable can the task be rolled back
+     * @param description of this task
      * @param containeredObject - used to derive the current container
      * @param source for this txn
-     * @return true if a new txn was started by this call, else false.
+     * @param task the task to perform in this transaction
      */
-    public static boolean startTxn( final boolean isSignificant,
+    public static void startTxn( final boolean isSignificant,
                                     final boolean isUndoable,
                                     final String description,
-                                    final Object source ) {
-        try {
-            final UnitOfWork uow = getCurrentUoW();
+                                    final Object source,
+                                    final AbstractModelerTask task) {
+    	
+    	final UnitOfWork uow = getCurrentUoW();
+        
+    	try {
             if (uow != null && uow.requiresStart()) {
                 uow.begin();
                 uow.setSignificant(isSignificant);
                 uow.setDescription(description);
                 uow.setSource(source);
                 uow.setUndoable(isUndoable);
-                return true;
             }
         } catch (final ModelerCoreException e) {
-            return false;
+        	task.setStatus(new Status(IStatus.ERROR, PLUGIN_ID, Util.getString("ModelerCore.Transaction_exec_failure", e))); //$NON-NLS-1$
+        	return;
         }
-
-        return false;
-    }
-
-    /**
-     * Get the current UnitOfWork. If it is not already started, start it and set the significant and description attributes. NOTE :
-     * UoW attributes will not be updated if this call does not result in a new UoW.
-     * 
-     * @deprecated - Use methods that take a source parameter instead
-     * @param isSignificant
-     * @param containeredObject - used to derive the current container
-     * @return true if a new txn was started by this call, else false.
-     */
-    @Deprecated
-    public static boolean startTxn( final boolean isSignificant,
-                                    final String description ) {
-        return startTxn(isSignificant, description, null);
+        
+        task.setStarted();
+            
+        Exception taskException = null;
+        try {
+        	task.execute(uow);
+        	task.setCompleted();
+        } catch (ModelerCoreException ex) {
+			taskException = ex;
+		}
+        finally {
+        	if (task.isStarted()) {
+        		if (task.isComplete()) {
+        			try {
+            			ModelerCore.commitTxn();
+            			
+            			// All successful
+            			task.setStatus(new Status(IStatus.OK, PLUGIN_ID, Util.getString("ModelerCore.Transaction_success_message"))); //$NON-NLS-1$
+            		}
+            		catch (final ModelerCoreException e) {
+            			// Failed to commit
+        				Util.log(IStatus.ERROR, e, e.getMessage());
+        				task.setStatus(new Status(IStatus.ERROR, PLUGIN_ID, Util.getString("ModelerCore.Transaction_commit_failure", e))); //$NON-NLS-1$
+        			}
+        		} else if (isUndoable) {
+        			try {
+        				
+        				ModelerCore.rollbackTxn();
+        				
+        				// Failed execution but rollbacked ok
+        				task.setStatus(new Status(IStatus.ERROR, PLUGIN_ID, Util.getString("ModelerCore.Transaction_exec_failure", taskException))); //$NON-NLS-1$
+        			}
+        			catch (final ModelerCoreException e) {
+        				// Failed to rollback and failed execution
+        				Util.log(IStatus.ERROR, e, e.getMessage());
+        				
+        				MultiStatus status = new MultiStatus(PLUGIN_ID, IStatus.ERROR, Util.getString("ModelerCore.Transaction_rollback_failure"), e); //$NON-NLS-1$
+        				status.add(new Status(IStatus.ERROR, PLUGIN_ID,Util.getString("ModelerCore.Transaction_exec_failure"), taskException)); //$NON-NLS-1$
+        				
+        				// Failed execution and failed rollback so set a multi status
+        				task.setStatus(status);
+        			}
+        		}
+        	}
+        }
     }
 
     /**
@@ -1526,12 +1551,13 @@ public class ModelerCore extends Plugin implements DeclarativeTransactionManager
      * @param isSignificant
      * @param containeredObject - used to derive the current container
      * @param source for this txn
-     * @return true if a new txn was started by this call, else false.
+     * @param task the task to perform in this transaction
      */
-    public static boolean startTxn( final boolean isSignificant,
+    public static void startTxn( final boolean isSignificant,
                                     final String description,
-                                    final Object source ) {
-        return startTxn(isSignificant, true, description, source);
+                                    final Object source,
+                                    final AbstractModelerTask task) {
+        startTxn(isSignificant, true, description, source, task);
     }
 
     /**
@@ -1540,11 +1566,11 @@ public class ModelerCore extends Plugin implements DeclarativeTransactionManager
      * 
      * @param containeredObject - used to derive the current container
      * @param source for this txn
-     * @return true if a new txn was started by this call, else false.
+     * @param task the task to perform in this transaction
      */
-    public static boolean startTxn( final String description,
-                                    final Object source ) {
-        return startTxn(true, true, description, source);
+    public static void startTxn( final String description,
+                                    final Object source, AbstractModelerTask task ) {
+        startTxn(true, true, description, source, task);
     }
 
     /**
