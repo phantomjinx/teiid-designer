@@ -1,5 +1,12 @@
 #!/bin/bash
 
+##
+#
+# Default jboss tools branch
+#
+##
+DEFAULT_JBT_BRANCH="tags/soatools-3.3.0.CR1"
+
 #################
 #
 # Checkout or update from the given repository
@@ -36,7 +43,8 @@ function checkout {
 function show_help {
 	echo "Usage: $0 [-b] [-r <jbt repo branch>] [-h]"
 	echo "-b - enable swt bot testing"
-	echo "-r - specify a different jboss tools repository branch. By default, $0 uses 'branches/soatools-3.3.0.Beta1'"
+	echo "-d - enable maven debugging"
+	echo "-r - specify a different jboss tools repository branch. By default, $0 uses '${DEFAULT_JBT_BRANCH}'"
   exit 1
 }
 
@@ -44,9 +52,7 @@ function show_help {
 # This script should be executed from the directory
 # it is located in. Try and stop alternatives
 #
-SCRIPT_DIR=`dirname "$0"`
 SCRIPT=`basename "$0"`
-ROOT_DIR="$SCRIPT_DIR/.."
 
 if [ ! -f $SCRIPT ]; then
   echo "This script must be executed from the same directory it is located in"
@@ -54,14 +60,34 @@ if [ ! -f $SCRIPT ]; then
 fi
 
 #
+# We must be in the same directory as the script so work
+# out the root directory and find its absolute path
+#
+SCRIPT_DIR=`pwd`
+
+echo "Script directory = $SCRIPT_DIR"
+
+#
+# Set root directory to be its parent since we are downloading
+# lots of stuff and the relative path to the parent pom is
+# ../build/parent/pom.xml
+#
+ROOT_DIR="$SCRIPT_DIR/.."
+
+#
 # By default skip swt bot tests
 #
 SKIP_SWTBOT=1
 
 #
-# Default jbosstools branch
+# By default debug is turned off
 #
-JBT_BRANCH="branches/soatools-3.3.0.Beta1"
+DEBUG=0
+
+#
+# jbosstools branch
+#
+JBT_BRANCH="${DEFAULT_JBT_BRANCH}"
 
 #
 # Determine the command line options
@@ -70,6 +96,7 @@ while getopts "b:r:h:" opt;
 do
 	case $opt in
 	b) SKIP_SWTBOT=0 ;;
+	d) DEBUG=1 ;;
 	r) JBT_BRANCH=${OPTARG} ;;
 	h) show_help ;;
 	*) show_help ;;
@@ -119,11 +146,18 @@ LOCAL_REPO="${ROOT_DIR}/m2-repository"
 MVN="mvn clean install"
 
 #
+# Turn on dedugging if required
+#
+if [ "${DEBUG}" == "1" ]; then
+  MVN_FLAGS="e -X"
+fi
+
+#
 # Maven options
 # -P <profiles> : The profiles to be used for downloading jbosstools artifacts
 # -D maven.repo.local : Assign the $LOCAL_REPO as the target repository
 #
-MVN_FLAGS="-P jbosstools-nightly-staging-composite,jbosstools-nightly-staging-composite-soa-tooling,unified.target -Dmaven.repo.local=${LOCAL_REPO}"
+MVN_FLAGS="${MVN_FLAGS} -P default,jbosstools-staging-aggregate -Dmaven.repo.local=${LOCAL_REPO}"
 
 #
 # Determine whether to skip swt bot tests
@@ -133,7 +167,7 @@ MVN_FLAGS="-P jbosstools-nightly-staging-composite,jbosstools-nightly-staging-co
 #
 if [ "${SKIP_SWTBOT}" == "1" ]; then
   echo -e "###\n#\n# Skipping swt bot tests\n#\n###"
-	MVN_FLAGS="${MVN_FLAGS} -Dswtbot.test.skip=true"
+  MVN_FLAGS="${MVN_FLAGS} -Dswtbot.test.skip=true"
 fi
 
 #
@@ -148,15 +182,22 @@ checkout ${JBT_BUILD_REPO} ${JBT_BUILD_DIR}
 
 echo "==============="
 
-# Fix a current bug in the unified target that includes several features that are
-# currenlty invalid
-
-echo "Backup up unified target"
-cp ${JBT_BUILD_DIR}/target-platform/unified.target ${BACKUP_DIR}/
-
-echo "Removing invalid feature bundles from unified target ..."
-cat ${JBT_BUILD_DIR}/target-platform/unified.target | sed '/org\.drools/d; /org\.mozilla/d; /org\.guvnor/d' > ${JBT_BUILD_DIR}/target-platform/unified.target.new
-mv ${JBT_BUILD_DIR}/target-platform/unified.target.new ${JBT_BUILD_DIR}/target-platform/unified.target
+#
+# Currently commented out as the default maven profile works better than the unified
+# target, which seems to have bits n pieces missing.
+# 
+# PGR 7th June 2012
+#
+#
+## Fix a current bug in the unified target that includes several features that are
+## currenlty invalid
+#
+#echo "Backup up unified target"
+#cp ${JBT_BUILD_DIR}/target-platform/unified.target ${BACKUP_DIR}/
+#
+#echo "Removing invalid feature bundles from unified target ..."
+#cat ${JBT_BUILD_DIR}/target-platform/unified.target | sed '/org\.drools/d; /org\.mozilla/d; /org\.guvnor/d; /org\.eclipse\.bpel/d' > ${JBT_BUILD_DIR}/target-platform/unified.target.new
+#mv ${JBT_BUILD_DIR}/target-platform/unified.target.new ${JBT_BUILD_DIR}/target-platform/unified.target
 
 echo "=============="
 
@@ -176,18 +217,26 @@ echo "==============="
 # Install the maven parent pom and profiles
 echo "Install parent pom"
 cd "${JBT_BUILD_DIR}/parent"
-${MVN} ${MAVEN_FLAGS}
+${MVN} ${MVN_FLAGS}
+cd "${SRC_DIR}"
 
 echo "==============="
 
 # Install the org.jboss.tools.ui.ext.bot plugin
 echo "Build and install the jboss tools swt bot plugin (Required for successful compilation)"
-cd "${JBT_TESTS_REPO}/tests/org.jboss.tools.ui.bot.ext.test"
-${MVN} ${MAVEN_FLAGS}
+
+cd "${JBT_TESTS_DIR}/plugins/org.jboss.tools.ui.bot.ext"
+${MVN} ${MVN_FLAGS}
+cd "${SRC_DIR}"
+
+cd "${JBT_TESTS_DIR}/tests/org.jboss.tools.ui.bot.ext.test"
+${MVN} ${MVN_FLAGS}
+cd "${SRC_DIR}"
 
 echo "==============="
 
 # Build and test the teiid designer codebase
 echo "Build and install the teiid designer plugins"
 cd "${SRC_DIR}"
-${MVN} ${MAVEN_FLAGS}
+echo "Executing ${MVN} ${MVN_FLAGS}"
+${MVN} ${MVN_FLAGS}
