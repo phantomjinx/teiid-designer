@@ -8,19 +8,23 @@
 package com.metamatrix.modeler.jdbc.relational;
 
 import java.util.Date;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
+
 import com.metamatrix.core.util.PluginUtilImpl;
 import com.metamatrix.metamodels.relational.RelationalPlugin;
 import com.metamatrix.metamodels.relational.SearchabilityType;
 import com.metamatrix.metamodels.relational.util.RelationalTypeMapping;
 import com.metamatrix.modeler.core.ModelerCore;
+import com.metamatrix.modeler.core.RegistrySPI;
 import com.metamatrix.modeler.internal.jdbc.relational.ModelerJdbcRelationalConstants;
 import com.metamatrix.modeler.internal.jdbc.relational.util.JdbcModelProcessorManager;
 import com.metamatrix.modeler.jdbc.relational.impl.RelationalModelProcessorImpl;
@@ -74,7 +78,7 @@ public class TestJdbcRelationalPlugin extends TestCase {
                 ((PluginUtilImpl)ModelerJdbcRelationalConstants.Util).initializePlatformLogger(jdbcRelationalPlugin);
                 RelationalPlugin relationalPlugin = new RelationalPlugin();
                 ((PluginUtilImpl)RelationalPlugin.Util).initializePlatformLogger(relationalPlugin);
-                ModelerCore.setModelContainer(null);
+                ((RegistrySPI) ModelerCore.getRegistry()).unregister(ModelerCore.DEFAULT_CONTAINER_KEY);
             }
 
             @Override

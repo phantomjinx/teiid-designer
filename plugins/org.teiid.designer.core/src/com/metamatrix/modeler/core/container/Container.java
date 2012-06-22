@@ -8,11 +8,14 @@
 package com.metamatrix.modeler.core.container;
 
 import java.util.Map;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.provider.ChangeNotifier;
+
 import com.metamatrix.modeler.core.ModelerCoreException;
+import com.metamatrix.modeler.core.PropertyChangePublisher;
 import com.metamatrix.modeler.core.metamodel.MetamodelRegistry;
 import com.metamatrix.modeler.core.transaction.UndoableListener;
 import com.metamatrix.modeler.core.transaction.UnitOfWorkProvider;
@@ -21,7 +24,12 @@ import com.metamatrix.modeler.core.types.DatatypeManager;
 /**
  * @since 3.1
  */
-public interface Container extends ResourceSet {
+public interface Container extends ResourceSet, PropertyChangePublisher {
+
+    /**
+     *  Property fired to property change listeners when the name of the container is changed
+     */
+	public static final String CONTAINER_NAME_PROPERTY = "container name property"; //$NON-NLS-1$
 
     /**
      * The identifiers for all extensions referenced within ModelerCore

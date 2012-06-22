@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -31,6 +32,7 @@ import org.eclipse.xsd.util.XSDConstants;
 import org.eclipse.xsd.util.XSDResourceImpl;
 import org.teiid.core.id.ObjectID;
 import org.teiid.core.id.UUID;
+
 import com.metamatrix.core.util.CoreArgCheck;
 import com.metamatrix.core.util.CoreStringUtil;
 import com.metamatrix.modeler.core.ModelerCore;
@@ -904,7 +906,8 @@ public class BuiltInTypesManager extends AbstractDatatypeManager {
             if (resource == null) {
                 final Object[] params = new Object[] {BUILTIN_DATATYPES_URI};
                 final String msg = ModelerSdtPlugin.Util.getString("BuiltInTypesManager.Error_obtain_the_built-in_datatypes_resource_from_the_container_using_URI_1", params); //$NON-NLS-1$
-                ModelerSdtPlugin.Util.log(IStatus.ERROR, msg);
+                
+                throw new RuntimeException(msg);
             }
 
             // Set the reference to the Emf resource

@@ -26,7 +26,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -180,11 +179,9 @@ public class ModelWorkspaceManager implements XmiHeaderCache {
 
                 manager.initModelWorkspace(workspace);
             } catch (final Throwable t) {
-                if (!ModelerCore.HEADLESS) {
-                    t.printStackTrace();
-                    ModelerCore.Util.log(IStatus.ERROR,
+            	t.printStackTrace();
+            	ModelerCore.Util.log(IStatus.ERROR,
                                          ModelerCore.Util.getString("ModelWorkspaceManager.Error_encountered_starting_ModelWorkspaceManager_1")); //$NON-NLS-1$
-                }
             }
         }
         return manager;
