@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.teiid.core.designer.EclipseMock;
@@ -51,6 +52,10 @@ public class DdlImporterTest {
         importer = createImporter(null);
     }
     
+    @After
+    public void tearDown() {
+        eclipseMock.dispose();
+    }
     @Test
     public void shouldAcceptNewModel() {
         

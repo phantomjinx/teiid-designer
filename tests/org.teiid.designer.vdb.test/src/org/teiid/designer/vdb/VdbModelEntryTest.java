@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.teiid.core.designer.EclipseMock;
@@ -35,6 +36,7 @@ import com.metamatrix.metamodels.core.ModelAnnotation;
 import com.metamatrix.metamodels.core.ModelType;
 import com.metamatrix.modeler.core.ModelEditor;
 import com.metamatrix.modeler.core.ModelerCore;
+import com.metamatrix.modeler.core.RegistrySPI;
 import com.metamatrix.modeler.core.workspace.ModelObjectAnnotations;
 import com.metamatrix.modeler.core.workspace.ModelResource;
 import com.metamatrix.modeler.internal.core.resource.EmfResource;
@@ -47,10 +49,12 @@ public class VdbModelEntryTest {
 
     private VdbModelEntry entry;
     private String modelResourceFileName;
-
+    private VdbTest vdbTest;
+    private ModelWorkspaceMock modelWorkspaceMock;
+    
     @Before
     public void before() throws Exception {
-        final VdbTest vdbTest = new VdbTest();
+        vdbTest = new VdbTest();
         vdbTest.before();
 
         Vdb vdb = vdbTest.getVdb();
@@ -80,7 +84,7 @@ public class VdbModelEntryTest {
         when(file.getContents()).thenReturn(fileInputStream);
         when(file.getFullPath()).thenReturn(modelPath);
 
-        final ModelWorkspaceMock modelWorkspaceMock = new ModelWorkspaceMock(eclipseMock);
+        modelWorkspaceMock = new ModelWorkspaceMock(eclipseMock);
         when(eclipseMock.workspaceRootLocation().append(modelPath)).thenReturn(modelPath);
         when(eclipseMock.workspaceRoot().findMember(modelPath)).thenReturn(file);
 
@@ -94,14 +98,21 @@ public class VdbModelEntryTest {
         
         final ModelResource modelResource = mock(ModelResource.class);
         when(modelResource.getPrimaryMetamodelUri()).thenReturn(ModelUtil.URI_XML_SCHEMA_MODEL);
-        
-        final ModelEditor me = ModelerCore.getRegistry().lookup(ModelerCore.MODEL_EDITOR_KEY, ModelEditor.class);
+     
+        final ModelEditor me = ModelResourceMockFactory.getModelerEditor();
+        ((RegistrySPI) ModelerCore.getRegistry()).register(ModelerCore.MODEL_EDITOR_KEY, me);
         when(me.findModelResource(model)).thenReturn(modelResource);
         when(me.findModelResource(file)).thenReturn(modelResource);
         
         final ModelObjectAnnotations annotations = mock(ModelObjectAnnotations.class);
         when(modelResource.getAnnotations()).thenReturn(annotations);
         entry = vdb.addModelEntry(modelPath, null);
+    }
+    
+    @After
+    public void afterEach() {
+    	modelWorkspaceMock.dispose();
+        vdbTest.after();
     }
 
     @Test
