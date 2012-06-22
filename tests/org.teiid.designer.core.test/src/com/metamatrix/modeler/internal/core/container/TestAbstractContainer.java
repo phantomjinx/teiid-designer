@@ -12,8 +12,11 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
+
 import org.eclipse.emf.edit.provider.ChangeNotifier;
+
 import com.metamatrix.modeler.core.ModelerCore;
+import com.metamatrix.modeler.core.RegistrySPI;
 import com.metamatrix.modeler.core.container.Container;
 import com.metamatrix.modeler.core.container.EObjectFinder;
 import com.metamatrix.modeler.core.container.ResourceFinder;
@@ -83,6 +86,7 @@ public class TestAbstractContainer extends TestCase {
         final ContainerImpl container = new FakeContainer();
         if (name != null) {
             container.setName(name);
+            ((RegistrySPI) ModelerCore.getRegistry()).register(name, container, Container.CONTAINER_NAME_PROPERTY);
         }
         if (desiredState == ContainerImpl.STARTED || desiredState == ContainerImpl.STOPPED) {
             container.start();
@@ -260,9 +264,15 @@ public class TestAbstractContainer extends TestCase {
     }
 
     public void testSetNullName() throws Exception {
-        // Can only set the name on unstartedContainers ...
-        helpTestSetName(this.unstartedContainer, null, true);
-        helpTestRegistryEntry(this.unstartedContainer, null);
+    	try {
+    		// Can only set the name on unstartedContainers ...
+    		// but cannot register an object with a null name
+    		helpTestSetName(this.unstartedContainer, null, true);
+    		fail("Should not be able to register object with a null name"); //$NON-NLS-1$
+    	}
+    	catch (IllegalArgumentException ex) {
+    		// Should throw this exception when trying to register the container with a null name
+    	}
     }
 
     public void testSetValidName() throws Exception {

@@ -8,12 +8,13 @@
 package com.metamatrix.modeler.core.validation.rules;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import com.metamatrix.metamodels.core.CoreFactory;
 import com.metamatrix.metamodels.core.CorePackage;
 import com.metamatrix.metamodels.core.ModelAnnotation;
@@ -491,8 +492,8 @@ public class TestStringNameValidator extends TestCase {
 
     protected void helpTestCreateUniqueName( final StringNameValidator val, final int largest, final String expectedName ) {
         final String name = MODEL_IMPORT_NAME_PREFIX;
-        final List existingNames = new LinkedList();
-        existingNames.add(MODEL_IMPORT_NAME_PREFIX);
+        
+        val.addExistingName(MODEL_IMPORT_NAME_PREFIX);
         for ( int j=0;j!=3;j++) {       // add 3 sets of duplicates
             for ( int i=1;i!=largest;++i ) {
                 val.addExistingName(MODEL_IMPORT_NAME_PREFIX+i);

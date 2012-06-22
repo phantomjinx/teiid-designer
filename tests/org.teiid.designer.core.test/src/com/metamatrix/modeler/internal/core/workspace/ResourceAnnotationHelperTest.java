@@ -3,30 +3,24 @@ package com.metamatrix.modeler.internal.core.workspace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.teiid.designer.core.ModelResourceMockFactory;
 
 import com.metamatrix.metamodels.core.Annotation;
 import com.metamatrix.metamodels.core.AnnotationContainer;
 import com.metamatrix.modeler.core.ModelEditor;
 import com.metamatrix.modeler.core.ModelerCore;
+import com.metamatrix.modeler.core.RegistrySPI;
 import com.metamatrix.modeler.core.util.ModelContents;
-import com.metamatrix.modeler.core.util.ModelResourceContainerFactory;
 import com.metamatrix.modeler.core.workspace.ModelResource;
 import com.metamatrix.modeler.core.workspace.ModelWorkspaceException;
 
-@RunWith( PowerMockRunner.class )
-@PrepareForTest( {ModelerCore.class, ModelResourceContainerFactory.class} )
 public class ResourceAnnotationHelperTest {
     @Mock
     private ModelResource testModelResource;
@@ -47,23 +41,14 @@ public class ResourceAnnotationHelperTest {
         helper = new ResourceAnnotationHelper();
 	}
 	
-	private ModelResource setUpModelResourceWithResourceAnnotation() throws ModelWorkspaceException {
-		Properties props = new Properties();
-		props.put(KEY_1, VALUE_1); 
-		props.put(KEY_2, VALUE_2);
-		
+	private ModelResource setUpModelResourceWithResourceAnnotation() throws ModelWorkspaceException {		
 		ModelResource mr = 
 			ModelResourceMockFactory.createModelResourceWithOutResourceAnnotation(
 					"SourceA", "ProjectA"); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		mockStatic(ModelResourceContainerFactory.class);
-		Annotation annotation = ModelResourceMockFactory.createAnnotation(true, "Sample Description", //$NON-NLS-1$
-				true, props, false, null);
-		when(ModelResourceContainerFactory.createNewAnnotation(mr.getModelAnnotation(), mr.getEmfResource())).thenReturn(annotation);
-		
-		mockStatic(ModelerCore.class);
+				
 		final ModelEditor me = ModelResourceMockFactory.getModelerEditor();
-		when(ModelerCore.getModelEditor()).thenReturn(me);
+		((RegistrySPI) ModelerCore.getRegistry()).register(ModelerCore.MODEL_EDITOR_KEY, me);
+		
 		ModelContents modelContents = ModelResourceMockFactory.getModelContents(false);
 		when(me.getModelContents(mr)).thenReturn(modelContents);
 		AnnotationContainer ac = ModelResourceMockFactory.getAnnotationContainer();
@@ -114,8 +99,11 @@ public class ResourceAnnotationHelperTest {
 	@Test
 	public void shouldGetPropertyValueForModelResourceAndKey() throws ModelWorkspaceException {
 		ModelResource testModelResource = setUpModelResourceWithResourceAnnotation();
-		
-		Annotation annotation = this.helper.getResourceAnnotation(testModelResource, true);
+	
+		Properties props = new Properties();
+        props.put(KEY_1, VALUE_1); 
+        props.put(KEY_2, VALUE_2);
+        Annotation annotation = ModelResourceMockFactory.createAnnotation(true, "Sample Description", true, props, false, null); //$NON-NLS-1$
 		
 		when(helper.getResourceAnnotation(testModelResource, false)).thenReturn(annotation);
 		
