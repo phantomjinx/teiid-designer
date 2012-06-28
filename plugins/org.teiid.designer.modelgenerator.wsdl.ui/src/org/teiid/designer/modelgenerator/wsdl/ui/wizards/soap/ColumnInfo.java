@@ -7,10 +7,14 @@
 */
 package org.teiid.designer.modelgenerator.wsdl.ui.wizards.soap;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 import org.teiid.designer.modelgenerator.wsdl.ui.Messages;
 
 import com.metamatrix.core.util.CoreArgCheck;
@@ -28,6 +32,11 @@ public class ColumnInfo implements ModelGeneratorWsdlUiConstants {
 	private static final StringNameValidator nameValidator = new RelationalStringNameValidator(false, true);
 	
 	private static final IPath EMPTY_PATH = new Path(StringUtilities.EMPTY_STRING);
+	
+	/**
+	 * The collection of AttributeInfo objects
+	 */
+	private Collection<AttributeInfo> attributeInfoList;
 	
     /**
      * The unique column name (never <code>null</code> or empty).
@@ -96,6 +105,8 @@ public class ColumnInfo implements ModelGeneratorWsdlUiConstants {
         
 		this.name = name;
 		this.datatype = datatype;
+		
+		this.attributeInfoList = new ArrayList<AttributeInfo>();
 		validate();
 	}
 	
@@ -318,6 +329,31 @@ public class ColumnInfo implements ModelGeneratorWsdlUiConstants {
 		validate();
 	}
 	
+	public AttributeInfo[] getAttributeInfoArray() {
+		return this.attributeInfoList.toArray(new AttributeInfo[this.attributeInfoList.size()]);
+	}
+	
+	public void addAttributeInfo(Object xmlElement, String name) {
+		this.attributeInfoList.add(new AttributeInfo(xmlElement, name, this));
+		validate();
+	}
+	
+	public void removeAttributeInfo(AttributeInfo theInfo) {
+		this.attributeInfoList.remove(theInfo);
+		validate();
+	}
+	
+	public String getUniqueAttributeName(String proposedName) {
+		for( AttributeInfo info : getAttributeInfoArray()) {
+			ColumnInfo.nameValidator.addExistingName(info.getName());
+		}
+		String changedName = ColumnInfo.nameValidator.createUniqueName(proposedName);
+		String finalName = changedName == null ? proposedName : changedName;
+		ColumnInfo.nameValidator.clearExistingNames();
+		return finalName;
+		
+	}
+	
 	/**
 	 * 
 	 * @return status the <code>IStatus</code> representing the validity of the data in this info object
@@ -342,6 +378,13 @@ public class ColumnInfo implements ModelGeneratorWsdlUiConstants {
 			return;
 		}
 		
+		// Check Datatypes
+		if( !ImportManagerValidator.isValidDatatype(getDatatype())) {
+			setStatus(new Status(IStatus.ERROR, PLUGIN_ID, 
+					NLS.bind(Messages.InvalidDatatype_0_ForColumn_1, getDatatype(), getName())));
+			return;
+		}
+		
 		// Validate Paths
 		
 		setStatus(Status.OK_STATUS);
@@ -355,7 +398,7 @@ public class ColumnInfo implements ModelGeneratorWsdlUiConstants {
     @Override
     public String toString() {
         StringBuilder text = new StringBuilder();
-        text.append("Teiid Metadata Column Info: "); //$NON-NLS-1$
+        text.append("Column Info: "); //$NON-NLS-1$
         text.append("name =").append(getName()); //$NON-NLS-1$
         text.append(", datatype =").append(getDatatype()); //$NON-NLS-1$
 
