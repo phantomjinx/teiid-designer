@@ -2,46 +2,6 @@
 
 #################
 #
-# Checkout or update from the given repository
-#
-# param repository url
-# param target directory
-#
-#################
-function checkout {
-	if [ -z "$1" ]; then
-	  echo "No repository for checkout specified ... exiting"
-		exit 1
-	fi
-
-	if [ -z "$2" ]; then
-	  echo "No directory for checkout specified ... exiting"
-		exit 1
-	fi
-	
-	if [ ! -d "$2" ]; then
-		echo "Checking out $1 to $2 ..."
-		svn co $1 $2
-	else
-		SVNURL=`svn info $2 | grep URL | sed 's/URL: //g'`
-
-		if [ "$1" == "$SVNURL" ]; then
-			echo "Updating $2 from $1 ..."
-		  svn up $2
-		else
-			# Could use svn switch but risk running
-			# in to conflicts
-			echo "Remove different checked out branch"
-			rm -rf $2
-			
-			echo "Checking out $1 to $2 ..."
-			svn co $1 $2
-		fi
-	fi
-}
-
-#################
-#
 # Show help and exit
 #
 #################
@@ -75,7 +35,7 @@ echo "Script directory = $SCRIPT_DIR"
 # lots of stuff and the relative path to the parent pom is
 # ../build/parent/pom.xml
 #
-ROOT_DIR="$SCRIPT_DIR/.."
+ROOT_DIR="$SCRIPT_DIR/../../.."
 
 #
 # By default debug is turned off
@@ -116,7 +76,7 @@ MVN="mvn clean install"
 # Turn on dedugging if required
 #
 if [ "${DEBUG}" == "1" ]; then
-  MVN_FLAGS="-e -X"
+  MVN_FLAGS="-e -X -U"
 fi
 
 #
@@ -124,12 +84,11 @@ fi
 # -P <profiles> : The profiles to be used for downloading jbosstools artifacts
 # -D maven.repo.local : Assign the $LOCAL_REPO as the target repository
 #
-MVN_FLAGS="${MVN_FLAGS} -P soa,default,jbosstools-staging-aggregate -Dmaven.repo.local=${LOCAL_REPO} -Dno.jbosstools.site -Dtycho.localArtifacts=ignore"
+MVN_FLAGS="${MVN_FLAGS} -P soa -Dmaven.repo.local=${LOCAL_REPO} -Dno.jbosstools.site -Dtycho.localArtifacts=ignore"
 
 echo "==============="
 
-# Build and test the teiid designer codebase
-echo "Build and install the teiid designer plugins"
-cd "${SRC_DIR}"
+# Build teiid designer target platform
+echo "Build the teiid designer target platform"
 echo "Executing ${MVN} ${MVN_FLAGS}"
 ${MVN} ${MVN_FLAGS}

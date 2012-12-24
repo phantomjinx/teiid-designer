@@ -5,7 +5,8 @@
 	<parent>
 		<groupId>org.jboss.tools</groupId>
 		<artifactId>parent</artifactId>
-		<version>4.0.0.Final-SNAPSHOT</version>
+		<!--version>4.0.0.Final-SNAPSHOT</version-->
+		<version>4.1.0.JBIDE-11121-SNAPSHOT</version>
 	</parent>
 	<groupId>org.jboss.tools</groupId>
 	<artifactId>teiid</artifactId>
@@ -46,6 +47,11 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
+		</repository>
+		<repository>
+			<id>locus-third-party-repo</id>
+			<url>http://download.jboss.org/teiid/designer/updates/locus</url>
+			<layout>p2</layout>
 		</repository>
 	</repositories>
 </project>
