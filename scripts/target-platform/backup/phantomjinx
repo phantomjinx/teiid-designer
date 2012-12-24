@@ -1,0 +1,7 @@
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+	<unit id="org.jbosstools.locus.apache.poi.feature.feature.group" version="2.5.1.Final-v20121221-1203"/>
+	<unit id="org.jbosstools.locus.jcip.annotations.feature.feature.group" version="1.0.0.Final-v20121221-1203"/>
+	<unit id="org.jbosstools.locus.sf.saxon.feature.feature.group" version="9.2.1.Final-v20121221-1203"/>
+	<repository location="http://www.phantomjinx.co.uk/org.jboss.tools.locus.update.site"/>
+</location>
+

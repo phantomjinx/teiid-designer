@@ -33,6 +33,11 @@ public class ElementSymbolImpl extends SymbolImpl implements IElementSymbol {
     }
 
     @Override
+    public boolean isExpression() {
+        return true;
+    }
+    
+    @Override
     public void acceptVisitor(ILanguageVisitor visitor) {
         visitor.visit(this);
     }
