@@ -109,5 +109,22 @@
             provider="org.teiid.datatools.connectivity.sql.TeiidDocumentContainmentProvider">
       </containment>
    </extension>
+      <extension
+            id="org.eclipse.equinox.security.ui.DefaultPasswordProvider"
+            name="%secureStorageProvider.name"
+            point="org.eclipse.equinox.security.secureStorage">
+         <provider
+               class="org.teiid.datatools.connectivity.security.impl.EquinoxPasswordProvider"
+               description="%secureStorageProvider.description"
+               priority="5">
+         </provider>
+      </extension>
+      <extension
+            point="org.eclipse.help.contexts">
+         <contexts
+               file="contexts_helpSecureStorage.xml"
+               plugin="org.teiid.datatools.connectivity">
+         </contexts>
+      </extension>
 
 </plugin>
