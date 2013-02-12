@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Secure Storage Provider Implementation
+Bundle-SymbolicName: org.teiid.designer.secure.storage
+Bundle-Version: 8.0.0.qualifier
+Bundle-Vendor: Redhat
+Fragment-Host: org.eclipse.equinox.security;bundle-version="1.1.100"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
