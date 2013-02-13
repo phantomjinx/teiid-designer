@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.teiid.designer.security.linux;singleton:=true
+Bundle-Version: 8.1.0.qualifier
+Bundle-Vendor: %Bundle-Vendor
+Fragment-Host: org.eclipse.equinox.security;bundle-version="1.1.100"
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
+ org.eclipse.ui.forms;bundle-version="[3.5.200,3.6.0)",
+ org.eclipse.help;bundle-version="[3.6.0,3.7.0)"
+Bundle-Localization: fragment
+Eclipse-PlatformFilter: (osgi.os=linux)
