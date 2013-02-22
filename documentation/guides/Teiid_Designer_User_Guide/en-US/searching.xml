@@ -22,7 +22,7 @@
 	<itemizedlist>
 		<listitem>
 			<para>
-				The individual actions in the Teiid Designer sub-menu are described below:
+				The individual actions in Teiid Designer sub-menu are described below:
 				<itemizedlist>
 					<listitem>
 						<para><inlinemediaobject>
@@ -138,7 +138,7 @@
 					<itemizedlist>
 						<listitem>
 							<para><emphasis role="bold">Step 1 </emphasis> - Select <emphasis role="bold">Search > Transformations...</emphasis> 
-								action on the Teiid Designer main menu <inlinemediaobject>
+								action on Teiid Designer main menu <inlinemediaobject>
 								<imageobject>
 									<imagedata fileref="images/icons/search-transformation.png"/>
 								</imageobject>
