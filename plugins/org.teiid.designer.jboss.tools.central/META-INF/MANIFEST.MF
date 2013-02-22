@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.teiid.designer.jboss.tools.central;singleton:=true
+Bundle-Version: 8.1.0.qualifier
+Bundle-Vendor: %pluginProvider
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.jboss.tools.project.examples,
+ org.eclipse.ui;bundle-version="3.103.0"

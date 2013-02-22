@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.jboss.tools.project.examples.configurators">
+      <configurator
+            class="org.teiid.designer.central.configurator.TeiidExampleProjectConfigurator"
+            id="org.teiid.designer.projects.examples.configurator">
+      </configurator>
+   </extension>
+
+</plugin>
