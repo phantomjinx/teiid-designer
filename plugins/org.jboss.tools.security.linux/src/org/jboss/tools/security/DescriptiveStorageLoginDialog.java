@@ -5,7 +5,7 @@
 *
 * See the AUTHORS.txt file distributed with this work for a full listing of individual contributors.
 */
-package org.teiid.designer.secure.storage;
+package org.jboss.tools.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -45,13 +45,13 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 public class DescriptiveStorageLoginDialog extends FormDialog {
 
     private static final String HELP_ID = "org.teiid.designer.secure.storage.sec_storage_context"; //$NON-NLS-1$
-    
+
     private static final String DIGEST_ALGORITHM = "MD5"; //$NON-NLS-1$
 
     protected Text password;
     protected Text confirm;
     private Label statusLabel;
-    
+
     protected Button showPassword;
     protected Button okButton;
 
@@ -63,7 +63,7 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
 
     /**
      * Create new dialog instance
-     * 
+     *
      * @param confirmPassword
      * @param passwordChange
      * @param location
@@ -74,7 +74,7 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
         this.passwordChange = passwordChange;
         this.location = location;
     }
-    
+
     /**
      * Get the shell from an active window. If not found, returns null.
      */
@@ -89,7 +89,7 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
 
     /**
      * Get the generated password
-     * 
+     *
      * @return {@link PBEKeySpec} instance of password
      */
     public PBEKeySpec getGeneratedPassword() {
@@ -98,9 +98,9 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        okButton = createButton(parent, IDialogConstants.OK_ID, Messages.ButtonLogin, true); 
+        okButton = createButton(parent, IDialogConstants.OK_ID, Messages.ButtonLogin, true);
         okButton.setEnabled(false);
-        createButton(parent, IDialogConstants.CANCEL_ID, Messages.ButtonExit, false); 
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.ButtonExit, false);
     }
 
     @Override
@@ -112,12 +112,12 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         shell.setText(Messages.DialogTitle);
-        
+
         PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, HELP_ID);
-        
+
         shell.setSize(700, 500);
     }
-    
+
     @Override
     protected void createFormContent(IManagedForm mform) {
         final ScrolledForm mainForm = mform.getForm();
@@ -126,7 +126,7 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
         Composite body = mainForm.getBody();
         TableWrapLayout layout = new TableWrapLayout();
         body.setLayout(layout);
-        
+
         /* description panel */
         Section descriptionSection = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED );
         descriptionSection.setText(Messages.DescriptionTitle);
@@ -136,53 +136,53 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
         descriptionText.setText(Messages.SecureDescription, true, true);
         TableWrapData td = new TableWrapData(TableWrapData.FILL);
         td.colspan = 1;
-        descriptionText.setLayoutData(td); 
+        descriptionText.setLayoutData(td);
 
         descriptionSection.setClient(descriptionText);
 
         /* password panel */
         String titleMsg;
         if (confirmPassword)
-            titleMsg = Messages.PasswordChangeTitle; 
+            titleMsg = Messages.PasswordChangeTitle;
         else if (passwordChange)
-            titleMsg = Messages.MessageLoginChange; 
+            titleMsg = Messages.MessageLoginChange;
         else
-            titleMsg = Messages.DialogTitle; 
-        
+            titleMsg = Messages.DialogTitle;
+
         /* Separator */
         toolkit.createLabel(body, ""); //$NON-NLS-1$
-        
+
         Section passwordSection = toolkit.createSection(body, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED );
         passwordSection.setText(titleMsg);
         passwordSection.setTitleBarForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE));
         passwordSection.setLayoutData(td);
-        
+
         Composite passwordComposite = toolkit.createComposite(passwordSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(passwordComposite);
-        
-        Label passwordLabel = toolkit.createLabel(passwordComposite, Messages.LabelPassword, SWT.LEFT); 
+
+        Label passwordLabel = toolkit.createLabel(passwordComposite, Messages.LabelPassword, SWT.LEFT);
         GridDataFactory.swtDefaults().applyTo(passwordLabel);
-        
+
         password = toolkit.createText(passwordComposite, "", SWT.LEFT | SWT.BORDER); //$NON-NLS-1$
         GridDataFactory.fillDefaults().grab(true, false).applyTo(password);
-        
+
         password.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent event) {
                 okButton.setEnabled(validatePassword(mainForm));
             }
         });
-        
+
         /* This textbox has the focus on dialog display */
         password.setFocus();
 
         if (confirmPassword) {
-            Label passwordConfLabel = toolkit.createLabel(passwordComposite, Messages.LabelConfirm, SWT.LEFT); 
+            Label passwordConfLabel = toolkit.createLabel(passwordComposite, Messages.LabelConfirm, SWT.LEFT);
             GridDataFactory.swtDefaults().applyTo(passwordConfLabel);
-            
+
             confirm = toolkit.createText(passwordComposite, "", SWT.LEFT | SWT.BORDER); //$NON-NLS-1$
             GridDataFactory.fillDefaults().grab(true, false).applyTo(confirm);
-            
+
             confirm.addModifyListener(new ModifyListener() {
                 @Override
                 public void modifyText(ModifyEvent event) {
@@ -191,12 +191,12 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
             });
         } else confirm = null;
 
-        Label fillerLabel = toolkit.createLabel(passwordComposite, "", SWT.LEFT); // filler //$NON-NLS-1$
+        Label fillerLabel = toolkit.createLabel(passwordComposite, "", SWT.LEFT);// filler //$NON-NLS-1$
         GridDataFactory.swtDefaults().applyTo(fillerLabel);
-        
-        showPassword = toolkit.createButton(passwordComposite, Messages.ShowPassword, SWT.CHECK | SWT.RIGHT); 
+
+        showPassword = toolkit.createButton(passwordComposite, Messages.ShowPassword, SWT.CHECK | SWT.RIGHT);
         GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(showPassword);
-        
+
         showPassword.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -215,7 +215,7 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
 
         if (location != null) {
             Group locationGroup = new Group(passwordComposite, SWT.NONE);
-            locationGroup.setText(Messages.LocationGroup); 
+            locationGroup.setText(Messages.LocationGroup);
             toolkit.adapt(locationGroup);
             GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(locationGroup);
             GridLayoutFactory.fillDefaults().applyTo(locationGroup);
@@ -223,12 +223,12 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
             Label locationLabel = toolkit.createLabel(locationGroup, new Path(location).toOSString(), SWT.WRAP);
             GridDataFactory.fillDefaults().grab(true, false).applyTo(locationLabel);
         }
-        
+
         passwordSection.setClient(passwordComposite);
-        
+
         /* Separator */
         toolkit.createLabel(body, ""); //$NON-NLS-1$
-        
+
         /* Status label for any messages */
         statusLabel = toolkit.createLabel(body, ""); //$NON-NLS-1$
         TableWrapData td2 = new TableWrapData(TableWrapData.FILL);
@@ -254,7 +254,7 @@ public class DescriptiveStorageLoginDialog extends FormDialog {
     protected boolean validatePassword(ScrolledForm mainForm) {
         String password1 = password.getText();
         if ((password1 == null) || (password1.length() == 0)) {
-            statusLabel.setText(Messages.MessageEmptyPassword); 
+            statusLabel.setText(Messages.MessageEmptyPassword);
             return false;
         }
         if (confirm != null) {

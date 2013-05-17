@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.teiid.designer.security.linux</name>
+	<name>org.jboss.tools.security.linux</name>
 	<comment></comment>
 	<projects>
 	</projects>

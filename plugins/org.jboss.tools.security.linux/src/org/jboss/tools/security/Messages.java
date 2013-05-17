@@ -5,7 +5,7 @@
 *
 * See the AUTHORS.txt file distributed with this work for a full listing of individual contributors.
 */
-package org.teiid.designer.secure.storage;
+package org.jboss.tools.security;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -13,8 +13,8 @@ import org.eclipse.osgi.util.NLS;
  *
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.teiid.designer.secure.storage.messages"; //$NON-NLS-1$
-    
+    private static final String BUNDLE_NAME = Messages.class.getPackage().getName() + ".messages"; //$NON-NLS-1$
+
     public static String SecureDescription;
     public static String DescriptionTitle;
     public static String MessageLogin;
@@ -30,7 +30,7 @@ public class Messages extends NLS {
     public static String ShowPassword;
     public static String NoDigestPassword;
     public static String LocationGroup;
-    
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

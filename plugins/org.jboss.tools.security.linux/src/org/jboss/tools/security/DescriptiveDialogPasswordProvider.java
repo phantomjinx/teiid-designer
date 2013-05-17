@@ -5,7 +5,7 @@
 *
 * See the AUTHORS.txt file distributed with this work for a full listing of individual contributors.
 */
-package org.teiid.designer.secure.storage;
+package org.jboss.tools.security;
 
 import java.net.URL;
 import javax.crypto.spec.PBEKeySpec;

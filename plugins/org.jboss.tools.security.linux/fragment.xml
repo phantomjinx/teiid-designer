@@ -6,7 +6,7 @@
     name="%secureStorageProvider.name"
     point="org.eclipse.equinox.security.secureStorage">
     <provider
-        class="org.teiid.designer.secure.storage.DescriptiveDialogPasswordProvider"
+        class="org.jboss.tools.security.DescriptiveDialogPasswordProvider"
         description="%secureStorageProvider.description"
         priority="3">
     </provider>
@@ -15,7 +15,7 @@
     point="org.eclipse.help.contexts">
     <contexts
         file="contexts_helpSecureStorage.xml"
-        plugin="org.teiid.designer.secure.storage">
+        plugin="org.jboss.tools.security.linux">
     </contexts>
    </extension>
 </fragment>
