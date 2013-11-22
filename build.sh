@@ -124,7 +124,7 @@ fi
 # -P <profiles> : The profiles to be used for downloading jbosstools artifacts
 # -D maven.repo.local : Assign the $LOCAL_REPO as the target repository
 #
-MVN_FLAGS="${MVN_FLAGS} -P target-platform,multiple.target -Dmaven.repo.local=${LOCAL_REPO} -Dno.jbosstools.site -Dtycho.localArtifacts=ignore"
+MVN_FLAGS="${MVN_FLAGS} -Dtpc.version=4.40.0.Alpha1-SNAPSHOT -P target-platform,multiple.target -Dmaven.repo.local=${LOCAL_REPO} -Dno.jbosstools.site -Dtycho.localArtifacts=ignore"
 
 echo "==============="
 
