@@ -57,6 +57,8 @@ import org.teiid.query.sql.lang.AlterTrigger;
 import org.teiid.query.sql.lang.Command;
 import org.teiid.query.sql.lang.LanguageObject;
 import org.teiid.query.sql.lang.SPParameter;
+import org.teiid.query.sql.lang.SetQuery;
+import org.teiid.query.sql.lang.SourceHint;
 import org.teiid.query.sql.lang.StoredProcedure;
 import org.teiid.query.sql.symbol.ElementSymbol;
 import org.teiid.query.sql.symbol.Expression;
@@ -867,4 +869,16 @@ public abstract class AbstractTeiidParser implements TeiidParser {
         }
         return this.metadataFactory;
     }
+
+    protected void setSourceHint(SourceHint sourceHint, Command command) {
+        if (sourceHint == null)
+            return;
+
+        if (command instanceof SetQuery) {
+            ((SetQuery)command).getProjectedQuery().setSourceHint(sourceHint);
+        } else {
+            command.setSourceHint(sourceHint);
+        }
+    }
+
 }

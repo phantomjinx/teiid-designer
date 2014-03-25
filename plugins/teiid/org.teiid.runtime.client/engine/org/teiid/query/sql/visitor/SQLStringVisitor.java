@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.teiid.core.types.ArrayImpl;
 import org.teiid.core.types.DataTypeManagerService;
 import org.teiid.core.util.StringUtil;
 import org.teiid.designer.annotation.Removed;
@@ -194,8 +195,6 @@ public class SQLStringVisitor extends LanguageVisitor
      */
     public static final String UNDEFINED = "<undefined>"; //$NON-NLS-1$
 
-    private static final TeiidServerVersion TEIID_VERSION_8 = new TeiidServerVersion("8.0.0"); //$NON-NLS-1$
-
     private static final String BEGIN_HINT = "/*+"; //$NON-NLS-1$
 
     private static final String END_HINT = "*/"; //$NON-NLS-1$
@@ -251,7 +250,12 @@ public class SQLStringVisitor extends LanguageVisitor
 
     protected boolean isTeiid8OrGreater() {
         ITeiidServerVersion minVersion = getTeiidVersion().getMinimumVersion();
-        return minVersion.equals(TEIID_VERSION_8) || minVersion.isGreaterThan(TEIID_VERSION_8);
+        return minVersion.equals(TeiidServerVersion.TEIID_8_SERVER) || minVersion.isGreaterThan(TeiidServerVersion.TEIID_8_SERVER);
+    }
+
+    protected boolean isTeiid87OrGreater() {
+        ITeiidServerVersion minVersion = getTeiidVersion().getMinimumVersion();
+        return minVersion.equals(TeiidServerVersion.TEIID_8_7_SERVER) || minVersion.isGreaterThan(TeiidServerVersion.TEIID_8_7_SERVER);
     }
 
     /**
@@ -433,7 +437,14 @@ public class SQLStringVisitor extends LanguageVisitor
         append(SPACE);
         append(BY);
         append(SPACE);
+        if (isTeiid87OrGreater() && obj.isRollup()) {
+        	append(ROLLUP);
+        	append(Tokens.LPAREN);
+        }
         registerNodes(obj.getSymbols(), 0);
+        if (isTeiid87OrGreater() && obj.isRollup()) {
+        	append(Tokens.RPAREN);
+        }
     }
 
     @Override
@@ -675,7 +686,7 @@ public class SQLStringVisitor extends LanguageVisitor
         
         if (column.isAutoIncremented()) {
             append(SPACE);
-            append(AUTO_INCREMENT);
+            append(DDLConstants.AUTO_INCREMENT);
         }
         
         appendDefault(column);
@@ -1356,7 +1367,15 @@ public class SQLStringVisitor extends LanguageVisitor
         append(AS);
         append(SPACE);
         append(Tokens.LPAREN);
-        visitNode(obj.getQueryExpression());
+        if (isTeiid87OrGreater()) {
+            if (obj.getCommand() == null) {
+    		    append("<dependent values>"); //$NON-NLS-1$
+    	    } else {
+    		    visitNode(obj.getCommand());
+    	    }
+        } else {
+            visitNode(obj.getQueryExpression());
+        }
         append(Tokens.RPAREN);
     }
 
@@ -1430,6 +1449,8 @@ public class SQLStringVisitor extends LanguageVisitor
 
             if (sh.getGeneralHint() != null) {
                 appendSourceHintValue(sh.getGeneralHint());
+        	} else {
+        		append(SPACE);
             }
             if (sh.getSpecificHints() != null) {
                 for (Map.Entry<String, SpecificHint> entry : sh.getSpecificHints().entrySet()) {
@@ -1851,6 +1872,20 @@ public class SQLStringVisitor extends LanguageVisitor
                 constantParts = new String[] {"null"}; //$NON-NLS-1$
             }
         } else {
+			if (isTeiid87OrGreater() && value.getClass() == ArrayImpl.class) {
+				ArrayImpl av = (ArrayImpl)value;
+				append(Tokens.LPAREN);
+				for (int i = 0; i < av.getValues().length; i++) {
+					if (i > 0) {
+						append(Tokens.COMMA);
+						append(SPACE);
+					}
+					Object value2 = av.getValues()[i];
+					outputLiteral(value2!=null?value2.getClass():av.getValues().getClass().getComponentType(), multiValued, value2);
+				}
+				append(Tokens.RPAREN);
+				return;
+			}
             if (Number.class.isAssignableFrom(type)) {
                 constantParts = new String[] {value.toString()};
             } else if (type.equals(DataTypeManagerService.DefaultDataTypes.BOOLEAN.getTypeClass())) {
@@ -3088,6 +3123,9 @@ public class SQLStringVisitor extends LanguageVisitor
         }
         registerNodes(array.getExpressions(), 0);
         if (!array.isImplicit()) {
+    		if (array.getExpressions().size() == 1) {
+    			append(Tokens.COMMA);
+    		}
             append(Tokens.RPAREN);
         }
     }

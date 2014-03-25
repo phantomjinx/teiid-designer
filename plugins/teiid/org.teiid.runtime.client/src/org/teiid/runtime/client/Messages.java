@@ -426,6 +426,7 @@ public class Messages {
     public enum Misc {
         ReflectionHelper_errorConstructing,
         TeiidVersionTooLow,
+        TeiidVersionFailure,
         Evaluator_noValue,
         ExceptionHolder_convertedException;
 

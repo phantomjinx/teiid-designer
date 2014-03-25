@@ -18,6 +18,8 @@ public class GroupBy extends SimpleNode implements IGroupBy<Expression, Language
     /** The set of expressions for the data elements to be group. */
     private List<Expression> symbols = new ArrayList<Expression>();
 
+    private boolean rollup;
+
     /**
      * @param p
      * @param id
@@ -92,6 +94,20 @@ public class GroupBy extends SimpleNode implements IGroupBy<Expression, Language
             clone.setSymbols(cloneList(getSymbols()));
 
         return clone;
+    }
+    
+    /**
+     * @return rollup
+     */
+    public boolean isRollup() {
+        return rollup;
+    }
+
+    /**
+     * @param rollup
+     */
+    public void setRollup(boolean rollup) {
+        this.rollup = rollup;
     }
 
 }
