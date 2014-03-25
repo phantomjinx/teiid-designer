@@ -917,6 +917,7 @@ Command userCommand(ParseInfo info) :
 {
 	Command command = null;
 	SourceHint sourceHint = null;
+	Block block = null;
 }
 {
     {
@@ -940,7 +941,14 @@ Command userCommand(ParseInfo info) :
 	LOOKAHEAD(2) command = createTempTable(info) |
     LOOKAHEAD(2) command = createForeignTempTable(info) |
 	command = alter(info) |
-	command = createTrigger(info)
+	command = createTrigger(info) |
+	block = compoundStatement(info)
+	{
+	  requires(versionAtLeast(Version.TEIID_8_6));
+	  CreateProcedureCommand procCommand = createASTNode(ASTNodes.CREATE_PROCEDURE_COMMAND);
+	  procCommand.setBlock(block);
+	  command = procCommand;
+	}
 	)
 	{
 	    setSourceHint(sourceHint, command);
@@ -979,7 +987,7 @@ Command createTempTable(ParseInfo info) #Create :
     List<ElementSymbol> pk = null;
 }
 {
-    <CREATE> <LOCAL> <TEMPORARY> <TABLE> 
+    <CREATE> [<LOCAL>] <TEMPORARY> <TABLE> 
     table = id(null)
     <LPAREN>
     {
@@ -3683,12 +3691,24 @@ example={code:sql}GROUP BY col1, col2{code}
 GroupBy groupBy(ParseInfo info) #GroupBy :
 {
 	List<Expression> expressions = null;
+	boolean rollup = false;
 }
 {
 	<GROUP> <BY>
-    expressions = expressionList(info)	
+    (<ROLLUP><LPAREN>
+     expressions = expressionList(info)
+     <RPAREN>
+     {
+       requires(versionAtLeast(Version.TEIID_8_5));
+       rollup = true;
+     }
+     |
+     expressions = expressionList(info)
+    )
+
 	{
 	    jjtThis.setSymbols(expressions);
+	    jjtThis.setRollup(rollup);
 		return jjtThis;
 	}
 }
@@ -3796,16 +3816,29 @@ example={code:sql}?{code}
 */
 Expression intParam(ParseInfo info) :
 {
+   Expression ex = null;
    Integer val = null;
 }
 {
-   (val = intVal() | <QMARK>)
-   {
-     if (val == null) {
-       return reference(info.incrementReferenceCount());
-     } 
-     return constant(val, DataTypeManagerService.DefaultDataTypes.INTEGER);
-   }
+  (
+     val = intVal()
+     | <QMARK>
+     {       requires(versionLessThan(Version.TEIID_8_5));
+     }
+     | ex = unsignedValueExpressionPrimary(info)
+     {
+       requires(versionAtLeast(Version.TEIID_8_5));
+       return ex;
+     }
+  )
+
+  {
+    if (versionLessThan(Version.TEIID_8_5) && val == null) {
+      return reference(info.incrementReferenceCount());
+    }
+    return constant(val, DataTypeManagerService.DefaultDataTypes.INTEGER);
+  }
+   
 }
 
 /*
@@ -4134,16 +4167,32 @@ Expression unsignedValueExpressionPrimary(ParseInfo info) :
 				if(isStringLiteral(symbolImage, info)) {
 				    return constant(normalizeStringLiteral(symbolImage));
 				}  
-			} | symbol=nonReserved()) 
-			(<LSBRACE> indexExpr = commonValueExpression(info) <RSBRACE>)?
+			} | symbol=nonReserved())
+			(
+             {               requires(versionLessThan(Version.TEIID_8_5));
+             }
+             <LSBRACE> indexExpr = commonValueExpression(info) <RSBRACE>
+			)?
 		)
 		|
 		LOOKAHEAD(subquery(info)) subquery = subquery(info)
 		|
-		( <LPAREN> 
- 			expression = expression(info)
+		( <LPAREN>
+            [expression = expression(info)
+            (LOOKAHEAD(2) <COMMA>arrayExpression = expression(info) {
+              if (expression != null) {
+                arrayExpressions = arrayExpressions(arrayExpressions, expression);
+                expression = null;
+              } 
+              arrayExpressions = arrayExpressions(arrayExpressions, arrayExpression);})*]
+            [<COMMA> {arrayExpressions = arrayExpressions(arrayExpressions, expression);} ]
 		  <RPAREN>
-		  (<LSBRACE> indexExpr = commonValueExpression(info) <RSBRACE>)?
+		  (
+		    {
+              requires(versionLessThan(Version.TEIID_8_5));
+            }
+		    <LSBRACE> indexExpr = commonValueExpression(info) <RSBRACE>
+		  )?
 		)
 		|
 		// Searched CASE expressions
@@ -4151,8 +4200,18 @@ Expression unsignedValueExpressionPrimary(ParseInfo info) :
 		|
 		// Non-searched CASE expressions
 		expression = caseExpression(info)
-	)						
-		
+	)
+
+    //array element reference expressions
+    (
+      {
+        requires(versionAtLeast(Version.TEIID_8_5));
+      }
+      <LSBRACE> indexExpr = plusExpression(info) <RSBRACE> {
+       indexExprs = arrayExpressions(indexExprs, indexExpr);
+      }
+    )*
+	
 	{
 		if(symbol != null) {
 			expression = elementSymbol(normalizeId(symbol.image));
@@ -5158,17 +5217,26 @@ example={code:sql}CREATE VIEW vw AS SELECT 1{code}
 void createTable(MetadataFactory factory) :
 {
 	boolean view = false;
+	boolean globalTemp = false;
 	String tableName = null;
 	Table table = null;
 	Token comment = null;
 	Command query = null;
 }
 {
-	<CREATE> (<FOREIGN> <TABLE> | [<VIRTUAL>] <VIEW> {view = true;}) 
+	<CREATE> (
+        (<FOREIGN> <TABLE>) | 
+        ([<VIRTUAL>] <VIEW> {view = true;}) |
+        (<GLOBAL> <TEMPORARY> <TABLE> { requires(versionAtLeast(Version.TEIID_8_5)); globalTemp = true; view = true;})
+    )
+
 	tableName = id(null)
 	{
 	    table = factory.addTable(tableName);
 	    table.setVirtual(view);
+	    if (globalTemp) {
+           table.setTableType(Table.Type.TemporaryTable);
+        }
 	}
 	(createTableBody(table, factory) | [optionsClause(table, factory)
 	   {
@@ -5177,7 +5245,7 @@ void createTable(MetadataFactory factory) :
 	])
 	[<AS> { comment = getToken(1).specialToken; } query = queryExpression(ParseInfo.DEFAULT_INSTANCE)
 	  {
-		   if (!view) {
+		   if (!view || globalTemp) {
      		   throw new ParseException(Messages.getString(Messages.TeiidParser.view_def, table.getName()));
 		   }
 		   table.setSelectTransformation((comment != null?comment.image+" ":"") + query.toString());	
@@ -5198,7 +5266,7 @@ Create createForeignTempTable(ParseInfo info) :
 	MetadataFactory factory = getTempMetadataFactory();
 }
 {
-	<CREATE> <FOREIGN> <TEMPORARY> <TABLE>
+	<CREATE> [<LOCAL>] <FOREIGN> <TEMPORARY> <TABLE>
 	tableName = id(null)
 	{
 		table = new Table();
@@ -5394,16 +5462,34 @@ void createColumn(MetadataFactory factory, Table table) :
 {
 	 element = id(Boolean.TRUE)
 	 (
-	  type = parseDataType()
-	  {
-		column = factory.addColumn(element, type.getType(), table);
-		column.setUpdatable(true);
-	    setTypeInfo(type, column);		    	
-		columnName.add(element);
-	  }
-	 )
-	 [<NOT> <NULL> { column.setNullType(Column.NullType.No_Nulls); }]
-	 [<AUTO_INCREMENT> {  autoIncrement = true; }]
+	   type = parseDataType()
+	   {
+         if (versionLessThan(Version.TEIID_8_5)) {
+           column = factory.addColumn(element, type.getType(), table);
+           column.setUpdatable(true);
+           setTypeInfo(type, column);               
+           columnName.add(element);
+         }
+       }
+	   | 
+       <SERIAL>
+       {
+         requires(versionAtLeast(Version.TEIID_8_5));
+         type = new ParsedDataType("INTEGER");
+         autoIncrement = true;
+         notNull = true;
+       }
+       
+       [<NOT> <NULL>
+       {
+         if (versionAtLeast(Version.TEIID_8_5))
+           notNull = true;
+         else
+           column.setNullType(Column.NullType.No_Nulls);
+       }]
+       [<AUTO_INCREMENT> {  autoIncrement = true; }]
+     )
+
 	 ((<PRIMARY> <KEY> { pk = true; }) | ([<UNIQUE> { unique = true;  }] [<INDEX> { index = true; }]))
 	 [<DEFAULT_KEYWORD> defalt = stringVal() {column.setDefaultValue(defalt);}]
 	 [optionsClause(column, factory)
@@ -5422,7 +5508,11 @@ void createColumn(MetadataFactory factory, Table table) :
 	    	}
 	 		factory.addPrimaryKey("PK", columnName, table);
 	 	}
-	     	 	
+
+        if (notNull) {
+          column.setNullType(Column.NullType.No_Nulls);
+        }
+
 	    column.setAutoIncremented(autoIncrement);
 	 }
 }
