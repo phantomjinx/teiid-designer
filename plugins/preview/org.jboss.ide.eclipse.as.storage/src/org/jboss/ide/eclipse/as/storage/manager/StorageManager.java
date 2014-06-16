@@ -16,7 +16,9 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.jboss.ide.eclipse.as.storage.IStorageManager;
 import org.jboss.ide.eclipse.as.storage.IStorageSource;
+import org.jboss.ide.eclipse.as.storage.IStorageSourceRegistry;
 import org.jboss.ide.eclipse.as.storage.IStorageUnit;
+import org.jboss.ide.eclipse.as.storage.IStorageUnitRegistry;
 import org.jboss.ide.eclipse.as.storage.Messages;
 import org.jboss.ide.eclipse.as.storage.StoragePlugin;
 import org.jboss.ide.eclipse.as.storage.StorageUnitStream;
@@ -30,17 +32,17 @@ import org.jboss.ide.eclipse.as.storage.util.StringConstants;
  */
 public class StorageManager implements IStorageManager {
 
-    private static StorageManager instance;
+    private static IStorageManager instance;
 
-    private final StorageSourceRegistry storageSourceRegistry;
+    private final IStorageSourceRegistry storageSourceRegistry;
 
-    private final StorageUnitRegistry unitRegistry;
+    private final IStorageUnitRegistry unitRegistry;
 
     /**
      * @return singleton instance
      * @throws Exception 
      */
-    public static StorageManager getInstance() throws Exception {
+    public static IStorageManager getInstance() throws Exception {
         if (instance == null)
             instance = new StorageManager();
 
@@ -55,15 +57,24 @@ public class StorageManager implements IStorageManager {
     /**
      * @return the registry
      */
-    public StorageSourceRegistry getStorageSourceRegistry() {
+    @Override
+    public IStorageSourceRegistry getStorageSourceRegistry() {
         return storageSourceRegistry;
+    }
+
+    /**
+     * @return the unitRegistry
+     */
+    @Override
+    public IStorageUnitRegistry getStorageUnitRegistry() {
+        return unitRegistry;
     }
 
     @Override
     public IStatus exportUnits(IStorageSource storageSource) {
         MultiStatus status = new MultiStatus(StoragePlugin.PLUGIN_ID, 0, Messages.StorageManagerExportStatusMsg, null);
 
-        for (IStorageUnit page : unitRegistry.getRegistered()) {
+        for (IStorageUnit page : unitRegistry.getRegisteredUnits()) {
             Set<StorageUnitStream> exportStreams = null;
             try {
                 exportStreams = page.toExportStreams();
@@ -88,7 +99,7 @@ public class StorageManager implements IStorageManager {
     public IStatus importUnits(IStorageSource storageSource) {
         MultiStatus status = new MultiStatus(StoragePlugin.PLUGIN_ID, 0, Messages.StorageManagerImportStatusMsg, null);
 
-        for (IStorageUnit page : unitRegistry.getRegistered()) {
+        for (IStorageUnit page : unitRegistry.getRegisteredUnits()) {
             Set<StorageUnitStream> storageUnitStreams = null;
             try {
                 storageUnitStreams = storageSource.read(page.getCategory());

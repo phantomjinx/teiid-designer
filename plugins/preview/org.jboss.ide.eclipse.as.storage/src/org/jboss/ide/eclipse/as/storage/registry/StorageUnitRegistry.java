@@ -7,9 +7,11 @@
 */
 package org.jboss.ide.eclipse.as.storage.registry;
 
+import java.util.Collection;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.jboss.ide.eclipse.as.storage.IStorageUnit;
 import org.jboss.ide.eclipse.as.storage.IStorageUnit.Category;
+import org.jboss.ide.eclipse.as.storage.IStorageUnitRegistry;
 import org.jboss.ide.eclipse.as.storage.util.KeyInValueHashMap;
 import org.jboss.ide.eclipse.as.storage.util.KeyInValueHashMap.KeyFromValueAdapter;
 import org.jboss.ide.eclipse.as.storage.util.registry.AbstractExtensionRegistry;
@@ -17,9 +19,9 @@ import org.jboss.ide.eclipse.as.storage.util.registry.AbstractExtensionRegistry;
 /**
  *
  */
-public class StorageUnitRegistry extends AbstractExtensionRegistry<Category, IStorageUnit> {
+public class StorageUnitRegistry extends AbstractExtensionRegistry<Category, IStorageUnit> implements IStorageUnitRegistry {
 
-    private static final String EXT_POINT_ID = "org.jboss.ide.eclipse.as.core.storage.configurationStorage"; //$NON-NLS-1$
+    private static final String EXT_POINT_ID = "org.jboss.ide.eclipse.as.storage.configurationStorage"; //$NON-NLS-1$
 
     private static final String STORAGE_UNIT_ID = "storageUnit"; //$NON-NLS-1$
 
@@ -56,4 +58,8 @@ public class StorageUnitRegistry extends AbstractExtensionRegistry<Category, ISt
         ((KeyInValueHashMap<Category, IStorageUnit>) this.extensions).add(extension);
     }
 
+    @Override
+    public Collection<IStorageUnit> getRegisteredUnits() {
+        return getRegistered();
+    }
 }

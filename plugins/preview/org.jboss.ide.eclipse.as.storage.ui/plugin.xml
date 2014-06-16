@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            category="org.eclipse.ui.Basic"
+            class="org.jboss.ide.eclipse.as.storage.ui.wizard.StorageExportWizard"
+            icon="icons/property_export.png"
+            id="org.jboss.ide.eclipse.as.storage.ui.wizard1"
+            name="Workspace Configuration">
+         <description>
+            Export workspace configuration to a separate archive.
+         </description>
+      </wizard>
+   </extension>
+
+</plugin>

@@ -8,20 +8,20 @@
  * Contributors: 
  * Red Hat, Inc. - initial API and implementation 
  ******************************************************************************/ 
-package org.jboss.ide.eclipse.as.storage;
+package org.jboss.ide.eclipse.as.storage.ui;
 
 import org.eclipse.osgi.util.NLS;
 
-
+@SuppressWarnings( "javadoc" )
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.jboss.ide.eclipse.as.storage.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.jboss.ide.eclipse.as.storage.ui.Messages"; //$NON-NLS-1$
 
-	// Storage framework
-	public static String StorageManagerExportStatusMsg;
-	public static String StorageManagerImportStatusMsg;
+    public static String storageExportWizardName;
 
-	public static String DirectoryStoragePropNullError;
-	public static String DirectoryStorageInvalidLocation;
+    public static String storageExportCategoryPageTitle;
+    public static String storageExportCategoryPageExportAllChkBox;
+
+    public static String storageExportDestinationPageTitle;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -14,12 +14,12 @@ import java.util.Collection;
 
 /**
  * A registry that initialises and hold all instances of
- * {@link IStorageUnit} in the application
+ * {@link IStorageSource} in the application
  */
-public interface IStorageRegistry {
+public interface IStorageSourceRegistry {
 
     /**
-     * @return all registered storage units
+     * @return all registered storage sources
      */
-    Collection<IStorageUnit> getRegisteredUnits();
+    Collection<IStorageSource> getRegisteredSources();
 }

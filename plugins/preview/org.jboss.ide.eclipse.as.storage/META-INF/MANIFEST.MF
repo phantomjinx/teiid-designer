@@ -6,6 +6,8 @@ Bundle-Version: 8.5.0.qualifier
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Export-Package: org.jboss.ide.eclipse.as.storage,
+ org.jboss.ide.eclipse.as.storage.manager,
+ org.jboss.ide.eclipse.as.storage.util,
  org.jboss.ide.eclipse.as.storage.util.registry
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -32,4 +32,14 @@ public interface IStorageManager {
      * @return status of import
      */
     IStatus importUnits(IStorageSource storageSource);
+
+    /**
+     * @return storage source registry
+     */
+    IStorageSourceRegistry getStorageSourceRegistry();
+
+    /**
+     * @return storage unit registry
+     */
+    IStorageUnitRegistry getStorageUnitRegistry();
 }

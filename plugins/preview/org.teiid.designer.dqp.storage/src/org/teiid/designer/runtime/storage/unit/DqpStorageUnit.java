@@ -20,12 +20,13 @@ import org.teiid.designer.runtime.DqpPlugin;
 import org.teiid.designer.runtime.spi.ITeiidServerManager;
 
 /**
- * Archive Page responsible for exporting / importing all jboss
- * IServer instances and their related teiid instances.
+ * Storage Unit responsible for exporting / importing all teiid instances.
  */
 public class DqpStorageUnit implements IStorageUnit, StringConstants {
 
     private static final String STORAGE_UNIT_ID = "teiidInstances"; //$NON-NLS-1$
+
+    private static final String CATEGORY_LABEL = "Teiid Instance Configurations"; //$NON-NLS-1$
 
     protected static final String TEIID_INSTANCES_FILE_ID = STORAGE_UNIT_ID + DOT + XML;
 
@@ -34,6 +35,11 @@ public class DqpStorageUnit implements IStorageUnit, StringConstants {
         @Override
         public String getId() {
             return STORAGE_UNIT_ID;
+        }
+
+        @Override
+        public String getLabel() {
+            return CATEGORY_LABEL;
         }
 
         @Override

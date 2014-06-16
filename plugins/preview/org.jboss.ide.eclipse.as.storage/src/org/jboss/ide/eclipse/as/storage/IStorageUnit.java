@@ -37,6 +37,11 @@ public interface IStorageUnit {
         String getId();
 
         /**
+         * @return readable label for this category
+         */
+        String getLabel();
+
+        /**
          * Units will be prioritised based on this value so higher priority
          * units will be exported and imported first.
          *
